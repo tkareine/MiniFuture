@@ -68,8 +68,8 @@ complex nested futures (`futEnd` variable in the code) in a loop
 `NumberOfFlatMapChains` times and composes them into one huge composed
 future (`fut` variable). Then it waits for the results.
 
-We repeat this `NumberOfIterations` times to get the arithmetic
-average and standard deviation of the completion of each huge future.
+We repeat this `NumberOfIterations` times to get the arithmetic mean
+and standard deviation of time spent completing each huge future.
 
 Compile it with Release build configuration, using -O compiler
 flag. Then run it from the terminal.
