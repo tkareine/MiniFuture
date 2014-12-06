@@ -41,6 +41,10 @@ class TryTests: XCTestCase {
   }
 
   func testLeftIdentityMonadLaw() {
+    func newSuccess<T>(x: T) -> Try<T> {
+      return Success(x)
+    }
+
     let lhs = Success(1).flatMap(newSuccess)
     let rhs = newSuccess(1)
 
@@ -57,6 +61,10 @@ class TryTests: XCTestCase {
   }
 
   func testAssociativityMonadLaw() {
+    func newSuccessIncrementedBy(by: Int)(val: Int) -> Try<Int> {
+      return Success(by + val)
+    }
+
     let t = Success(1)
     let f = newSuccessIncrementedBy(1)
     let g = newSuccessIncrementedBy(2)
@@ -66,13 +74,5 @@ class TryTests: XCTestCase {
 
     // Try<T> does not adopt Equatable protocol, so no equality test with `==`
     XCTAssert(lhs.value! == rhs.value!)
-  }
-
-  private func newSuccess<T>(x: T) -> Try<T> {
-    return Success(x)
-  }
-
-  private func newSuccessIncrementedBy(by: Int)(val: Int) -> Try<Int> {
-    return Success(by + val)
   }
 }
