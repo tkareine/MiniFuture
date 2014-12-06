@@ -1,9 +1,11 @@
 ToyFuture
 =========
 
-A Future design pattern implementation in Swift using libdispatch and
-POSIX mutexes and condition variables. It's an experiment, thus the
-name. *Don't use in production!*
+A Future design pattern implementation in Swift, using libdispatch and
+POSIX mutexes and condition variables.
+
+For now, this is an experiment, hence the name for the project. *You
+probably shouldn't use this in production.*
 
 Characteristics
 ---------------
@@ -63,32 +65,35 @@ See more in `ToyFutureExample/main.swift`.
 Performance
 -----------
 
-There's a benchmark in `ToyFutureBenchmark/main.swift`. It builds
-complex nested futures (`futEnd` variable in the code) in a loop
-`NumberOfFlatMapChains` times and composes them into one huge composed
-future (`fut` variable). Then it waits for the results.
+There's a benchmark in `ToyFutureBenchmark/main.swift`. It builds up
+complex nested futures (the `futEnd` variable in the code) in a loop
+`NumberOfFutureCompositions` times and chains them into one big
+composite future (the `fut` variable). Then the benchmark waits for
+the future to complete.
 
 We repeat this `NumberOfIterations` times to get the arithmetic mean
-and standard deviation of time spent completing each huge future.
+and standard deviation of time spent completing each composite future.
 
-Compile it with Release build configuration, using -O compiler
-flag. Then run it from the terminal.
+Compile it with Release build configuration, which enables `-O`
+compiler flag. Then run it from the terminal.
 
-Example run on my laptop (MacBook Pro 2,6 GHz Intel Core i7 Haswell,
-16 GB 1600 MHz DDR3):
+Example run with MacBook Pro 2.6 GHz Intel Core i7 Haswell, 16 GB 1600
+MHz DDR3:
 
 ```
 $ ./ToyFutureBenchmark
-warm up: 2.07 s (± 0.01 s)
-measure: 2.07 s (± 0.01 s)
+iterations: 100, futures composed: 2000
+
+warm up: 220 ms (± 3 ms)
+measure: 220 ms (± 2 ms)
 ```
 
-Total memory consumption stayed below 60 MB.
+Total memory consumption of the process stayed below 50 MB.
 
 Future work
 -----------
 
 * Should `Try<T>` be replaced with `Either<L, R>`, so the client could
   decide the type for failure cases?
-* Implement cancellation and timeouts
+* Implement future cancellation and timeouts
 * Implement more composition operations
