@@ -1,12 +1,12 @@
 import CoreFoundation
 
-let NumberOfIterations = 10
-let NumberOfFlatMapChains = 20_000
+let NumberOfIterations = 100
+let NumberOfFutureCompositions = 2000
 
 func stressTestFutures() {
   var fut = Future.succeeded(0)
 
-  for i in 0..<NumberOfFlatMapChains {
+  for i in 0..<NumberOfFutureCompositions {
     let futBegin = Future.async { Success(i) }
     let futEnd: Future<Int> = futBegin.flatMap { e0 in
       let futIn0: Future<Int> = Future.succeeded(i).flatMap { e1 in
@@ -38,35 +38,48 @@ func stressTestFutures() {
   fut.get()
 }
 
-func avg(samples: [Double]) -> Double {
-  let sum = samples.reduce(0.0) { $0 + $1 }
-  return sum / Double(samples.count)
+struct Measurement {
+  let mean: Double
+  let stddev: Double
+
+  init(from samples: [Double]) {
+    mean = Measurement.mean(samples)
+    stddev = Measurement.stddev(samples, mean)
+  }
+
+  static func mean(samples: [Double]) -> Double {
+    let sum = samples.reduce(0.0) { $0 + $1 }
+    return sum / Double(samples.count)
+  }
+
+  static func variance(samples: [Double], _ mean: Double) -> Double {
+    let total = samples.reduce(0.0) { acc, s in acc + pow(s - mean, 2.0) }
+    return total / Double(samples.count)
+  }
+
+  static func stddev(samples: [Double], _ mean: Double) -> Double {
+    return sqrt(variance(samples, mean))
+  }
 }
 
-func variance(samples: [Double], avg: Double) -> Double {
-  let total = samples.reduce(0.0) { acc, s in acc + pow(s - avg, 2.0) }
-  return total / Double(samples.count)
-}
-
-func stddev(samples: [Double], avg: Double) -> Double {
-  return sqrt(variance(samples, avg))
-}
-
-func measure(label: String, block: () -> Void) {
+func measure(block: () -> Void) -> Measurement {
   var samples: [Double] = []
 
-  for i in 0..<NumberOfIterations {
+  for _ in 0..<NumberOfIterations {
     let start = CFAbsoluteTimeGetCurrent()
     block()
     let end = CFAbsoluteTimeGetCurrent()
-    samples.append(end - start)
+    samples.append((end - start) * 1000)
   }
 
-  let sampleAvg = avg(samples)
-  let sampleStdDev = stddev(samples, sampleAvg)
-
-  println(String(format: "%@: %.2f s (± %.2f s)", label, sampleAvg, sampleStdDev))
+  return Measurement(from: samples)
 }
 
-measure("warm up", stressTestFutures)
-measure("measure", stressTestFutures)
+func formatMeasurement(label: String, withData m: Measurement) -> String {
+  return String(format: "%@: %.f ms (± %.f ms)", label, m.mean, m.stddev)
+}
+
+println("iterations: \(NumberOfIterations), futures composed: \(NumberOfFutureCompositions)\n")
+
+println(formatMeasurement("warm up", withData: measure(stressTestFutures)))
+println(formatMeasurement("measure", withData: measure(stressTestFutures)))
