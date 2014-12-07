@@ -15,6 +15,7 @@ class TryTests: XCTestCase {
     let t = Failure<Int>("2")
 
     XCTAssert(t.value == nil)
+    XCTAssertEqual(t.desc, "2")
     XCTAssertFalse(t.isSuccess)
     XCTAssertTrue(t.isFailure)
     XCTAssertEqual(t.description, "Failure(2)")
