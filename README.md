@@ -21,22 +21,30 @@ Future composition with `Future#flatMap` either continues the
 composition chain or short-circuits based on the resolved `Try<T>`
 object of the current future.
 
-We must use explicit success and failure objects, because you can't
-use exceptions in Swift. The idea is inspired from Scala 2.10, where
-the Future library wraps exceptions thrown inside future computations
-to `Failure` values. In ToyFuture, you must do this yourself.
+We use explicit success and failure objects, because you can't use
+exceptions in Swift. The idea is inspired from Scala 2.10, where the
+Future library wraps exceptions thrown inside future computations to
+`Failure` values. In ToyFuture, you must do this yourself.
 
 All async operations run in libdispatch's default global concurrent
 queue. Closures passed to `Future#flatMap` and `Future#onComplete`
 always execute in a queue worker thread.  Use synchronization as
-appropriate when accessing objects outside the Future.
+appropriate when accessing state outside the Future.
 
-For wrapping values inside the Future, use `Future.succeeded` and
-`Future.failed` for immediate values. Use `Future.async` for async
+Usage
+-----
+
+To get a Future job running, use `Future.succeeded` and
+`Future.failed` to wrap immediate values. Use `Future.async` for async
 jobs that compute the value later in a queue worker thread.
 
-Example
--------
+After this, use the `Future#flatMap` operation of the returned future
+to compose another future that depends on the completed result of the
+previous future. Use `Future#get` to wait for the result of a
+future. Use `Future#onComplete` to add a callback to be run when the
+future completes.
+
+### Example
 
 ```swift
 let futBegin = Future.async { Success(0) }
@@ -93,7 +101,10 @@ Total memory consumption of the process stayed below 50 MB.
 Future work
 -----------
 
-* Should `Try<T>` be replaced with `Either<L, R>`, so the client could
-  decide the type for failure cases?
+* Should `Try<T>` be replaced with `Either<L, R>`, so that the client
+  could decide the type for failure cases?
+* Maybe Swift will support enumerations with generified associated
+  values later? When that happens, consider implementing `Try<T>` as
+  an enumeration. This should help pattern matching on `Try<T>`.
 * Implement future cancellation and timeouts
-* Implement more composition operations
+* Implement more composition operations on futures
