@@ -56,7 +56,7 @@ public class Success<T>: Try<T> {
 }
 
 public class Failure<T>: Try<T> {
-  let desc: String
+  public let desc: String
 
   public init(_ d: String) {
     desc = d

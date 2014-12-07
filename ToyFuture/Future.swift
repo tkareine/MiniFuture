@@ -1,6 +1,6 @@
 import Dispatch
 
-struct FutureExecution {
+private struct FutureExecution {
   private static var sharedQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
   typealias Group = dispatch_group_t
@@ -27,19 +27,19 @@ struct FutureExecution {
 }
 
 public class Future<T> {
-  class func async(block: () -> Try<T>) -> Future<T> {
+  public class func async(block: () -> Try<T>) -> Future<T> {
     return AsyncFuture(block)
   }
 
-  class func succeeded(val: T) -> Future<T> {
+  public class func succeeded(val: T) -> Future<T> {
     return fromTry(Success(val))
   }
 
-  class func failed(val: String) -> Future<T> {
+  public class func failed(val: String) -> Future<T> {
     return fromTry(Failure(val))
   }
 
-  class func fromTry(val: Try<T>) -> Future<T> {
+  public class func fromTry(val: Try<T>) -> Future<T> {
     return ImmediateFuture(val)
   }
 
