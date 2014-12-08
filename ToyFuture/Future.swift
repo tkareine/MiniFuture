@@ -56,11 +56,11 @@ public class Future<T> {
   }
 
   public func get() -> Try<T> {
-    assertionFailure("must be overridden")
+    fatalError("must be overridden")
   }
 
   public func onComplete(block: CompletionCallback) {
-    assertionFailure("must be overridden")
+    fatalError("must be overridden")
   }
 
   public func flatMap<U>(f: T -> Future<U>) -> Future<U> {
@@ -73,7 +73,7 @@ public class Future<T> {
         // we cannot cast dynamically with generic types, so let's create new value
         promise.complete(Failure(failure.desc))
       default:
-        assertionFailure("unknown Try type")
+        fatalError("unknown Try subtype")
       }
     }
     return promise

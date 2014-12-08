@@ -10,11 +10,11 @@ public class Try<T>: Printable {
   }
 
   public var description: String {
-    assertionFailure("must be implemented in a subclass")
+    fatalError("must be implemented in a subclass")
   }
 
   public var isSuccess: Bool {
-    assertionFailure("must be implemented in a subclass")
+    fatalError("must be implemented in a subclass")
   }
 
   public var isFailure: Bool {
@@ -28,7 +28,7 @@ public class Try<T>: Printable {
     case let f as Failure<T>:
       return Failure(f.desc)
     default:
-      assertionFailure("unknown Try type")
+      fatalError("unknown Try type")
     }
   }
 

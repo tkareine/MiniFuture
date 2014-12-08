@@ -103,7 +103,7 @@ class FutureTests: XCTestCase {
     }
 
     let fut2: Future<[Int]> = fut1.flatMap { e in
-      assertionFailure("must not be called")
+      fatalError("must not be called")
       return Future.succeeded(e + [3])
     }
 
@@ -148,7 +148,7 @@ class FutureTests: XCTestCase {
     }
 
     let fut3: Future<[Int]> = fut2.flatMap { e in
-      assertionFailure("must not be called")
+      fatalError("must not be called")
       return Future.async { Success(e + [2]) }
     }
 
@@ -192,7 +192,7 @@ class FutureTests: XCTestCase {
       futIn = Future.succeeded([e0, 1]).flatMap { e1 in
         semIn.wait()
         return Future<[Int]>.failed(toString(e1 + [2])).flatMap { e2 in
-          assertionFailure("must not be called")
+          fatalError("must not be called")
           return Future.succeeded(e2 + [3])
         }
       }
@@ -232,7 +232,7 @@ class FutureTests: XCTestCase {
       futIn = f.flatMap { e1 in
         let f: Future<[Int]> = Future.async { Failure(toString(e1 + [2])) }
         return f.flatMap { e2 in
-          assertionFailure("must not be called")
+          fatalError("must not be called")
           return Future.succeeded(e2 + [3])
         }
       }
