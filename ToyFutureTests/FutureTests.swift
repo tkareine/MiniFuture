@@ -1,7 +1,7 @@
 import XCTest
 
 class FutureTests: XCTestCase {
-  func testGetImmediateSucceedingFuture() {
+  func testGetSucceedingImmediateFuture() {
     let fut = Future.succeeded(1)
 
     XCTAssertTrue(fut.isCompleted)  // no need to wait with `get`
@@ -16,7 +16,7 @@ class FutureTests: XCTestCase {
     XCTAssertEqual(res1.description, "Success(1)")
   }
 
-  func testGetImmediateFailingFuture() {
+  func testGetFailingImmediateFuture() {
     let fut = Future<Int>.failed("1")
 
     XCTAssertTrue(fut.isCompleted)  // no need to wait with `get`
@@ -26,7 +26,7 @@ class FutureTests: XCTestCase {
     XCTAssertEqual(fut.get().description, "Failure(1)")
   }
 
-  func testGetAsyncSucceedingFuture() {
+  func testGetSucceedingAsyncFuture() {
     let sem = Semaphore()
     let fut = Future<Int>.async {
       sem.wait()
@@ -46,7 +46,7 @@ class FutureTests: XCTestCase {
     XCTAssertEqual(res0.description, "Success(1)")
   }
 
-  func testGetAsyncFailingFuture() {
+  func testGetFailingAsyncFuture() {
     let fut = Future<Int>.async { Failure("1") }
     let res = fut.get()
 
