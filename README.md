@@ -73,13 +73,13 @@ futBegin.get()  // Success(0)
 futEnd.get()    // Success([0, 10, 11, 20, 21])
 ```
 
-See more in `ToyFutureExample/main.swift`.
+See more in `Example/main.swift`.
 
 Performance
 -----------
 
-There's a benchmark in `ToyFutureBenchmark/main.swift`. It builds up
-complex nested futures (the `futEnd` variable in the code) in a loop
+There's a benchmark in `Benchmark/main.swift`. It builds up complex
+nested futures (the `futEnd` variable in the code) in a loop
 `NumberOfFutureCompositions` times and chains them into one big
 composite future (the `fut` variable). Then the benchmark waits for
 the future to complete.
@@ -94,7 +94,7 @@ Example run with MacBook Pro 2.6 GHz Intel Core i7 Haswell, 16 GB 1600
 MHz DDR3:
 
 ```
-$ ./ToyFutureBenchmark
+$ ./Benchmark
 iterations: 100, futures composed: 2000
 
 warm up: 220 ms (± 3 ms)

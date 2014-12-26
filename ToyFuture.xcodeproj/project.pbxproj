@@ -49,11 +49,11 @@
 		E91C4ACA1A3364FF00E620AC /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E91C4ACB1A3364FF00E620AC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E942A48D1A2FA50D00781DC5 /* TryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryTests.swift; sourceTree = "<group>"; };
-		E9546F991A30F88E00799DFE /* ToyFutureBenchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ToyFutureBenchmark; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9546F991A30F88E00799DFE /* Benchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Benchmark; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9546F9B1A30F88E00799DFE /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		E99CE4E71A2A635D00D52D0E /* ToyFutureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToyFutureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E99CE4E71A2A635D00D52D0E /* Test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E99CE4ED1A2A635D00D52D0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E99CE4FA1A2A63B700D52D0E /* ToyFutureExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ToyFutureExample; sourceTree = BUILT_PRODUCTS_DIR; };
+		E99CE4FA1A2A63B700D52D0E /* Example */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Example; sourceTree = BUILT_PRODUCTS_DIR; };
 		E99CE4FC1A2A63B700D52D0E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E99CE5031A2A642600D52D0E /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
 		E99CE5041A2A642600D52D0E /* Try.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Try.swift; sourceTree = "<group>"; };
@@ -86,12 +86,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E9546F9A1A30F88E00799DFE /* ToyFutureBenchmark */ = {
+		E9546F9A1A30F88E00799DFE /* Benchmark */ = {
 			isa = PBXGroup;
 			children = (
 				E9546F9B1A30F88E00799DFE /* main.swift */,
 			);
-			path = ToyFutureBenchmark;
+			name = Benchmark;
+			path = Benchmark;
 			sourceTree = "<group>";
 		};
 		E99CE4D31A2A635D00D52D0E = {
@@ -99,10 +100,10 @@
 			children = (
 				E91C4ACB1A3364FF00E620AC /* README.md */,
 				E91C4ACA1A3364FF00E620AC /* LICENSE.txt */,
-				E99CE4DE1A2A635D00D52D0E /* ToyFuture */,
-				E99CE4EB1A2A635D00D52D0E /* ToyFutureTests */,
-				E99CE4FB1A2A63B700D52D0E /* ToyFutureExample */,
-				E9546F9A1A30F88E00799DFE /* ToyFutureBenchmark */,
+				E99CE4DE1A2A635D00D52D0E /* Source */,
+				E99CE4EB1A2A635D00D52D0E /* Test */,
+				E99CE4FB1A2A63B700D52D0E /* Example */,
+				E9546F9A1A30F88E00799DFE /* Benchmark */,
 				E99CE4DD1A2A635D00D52D0E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,14 +111,14 @@
 		E99CE4DD1A2A635D00D52D0E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E99CE4E71A2A635D00D52D0E /* ToyFutureTests.xctest */,
-				E99CE4FA1A2A63B700D52D0E /* ToyFutureExample */,
-				E9546F991A30F88E00799DFE /* ToyFutureBenchmark */,
+				E99CE4E71A2A635D00D52D0E /* Test.xctest */,
+				E99CE4FA1A2A63B700D52D0E /* Example */,
+				E9546F991A30F88E00799DFE /* Benchmark */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E99CE4DE1A2A635D00D52D0E /* ToyFuture */ = {
+		E99CE4DE1A2A635D00D52D0E /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				E99CE5041A2A642600D52D0E /* Try.swift */,
@@ -125,17 +126,19 @@
 				E9F433CF1A33080800F8F0AC /* Semaphore.swift */,
 				E99CE5031A2A642600D52D0E /* Future.swift */,
 			);
-			path = ToyFuture;
+			name = Source;
+			path = Source;
 			sourceTree = "<group>";
 		};
-		E99CE4EB1A2A635D00D52D0E /* ToyFutureTests */ = {
+		E99CE4EB1A2A635D00D52D0E /* Test */ = {
 			isa = PBXGroup;
 			children = (
 				E942A48D1A2FA50D00781DC5 /* TryTests.swift */,
 				E99CE5071A2A65D400D52D0E /* FutureTests.swift */,
 				E99CE4EC1A2A635D00D52D0E /* Supporting Files */,
 			);
-			path = ToyFutureTests;
+			name = Test;
+			path = Test;
 			sourceTree = "<group>";
 		};
 		E99CE4EC1A2A635D00D52D0E /* Supporting Files */ = {
@@ -146,20 +149,21 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		E99CE4FB1A2A63B700D52D0E /* ToyFutureExample */ = {
+		E99CE4FB1A2A63B700D52D0E /* Example */ = {
 			isa = PBXGroup;
 			children = (
 				E99CE4FC1A2A63B700D52D0E /* main.swift */,
 			);
-			path = ToyFutureExample;
+			name = Example;
+			path = Example;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E9546F981A30F88E00799DFE /* ToyFutureBenchmark */ = {
+		E9546F981A30F88E00799DFE /* Benchmark */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E9546F9F1A30F88E00799DFE /* Build configuration list for PBXNativeTarget "ToyFutureBenchmark" */;
+			buildConfigurationList = E9546F9F1A30F88E00799DFE /* Build configuration list for PBXNativeTarget "Benchmark" */;
 			buildPhases = (
 				E9546F951A30F88E00799DFE /* Sources */,
 				E9546F961A30F88E00799DFE /* Frameworks */,
@@ -169,14 +173,14 @@
 			);
 			dependencies = (
 			);
-			name = ToyFutureBenchmark;
-			productName = ToyFuturebenchmark;
-			productReference = E9546F991A30F88E00799DFE /* ToyFutureBenchmark */;
+			name = Benchmark;
+			productName = Benchmark;
+			productReference = E9546F991A30F88E00799DFE /* Benchmark */;
 			productType = "com.apple.product-type.tool";
 		};
-		E99CE4E61A2A635D00D52D0E /* ToyFutureTests */ = {
+		E99CE4E61A2A635D00D52D0E /* Test */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E99CE4F31A2A635D00D52D0E /* Build configuration list for PBXNativeTarget "ToyFutureTests" */;
+			buildConfigurationList = E99CE4F31A2A635D00D52D0E /* Build configuration list for PBXNativeTarget "Test" */;
 			buildPhases = (
 				E99CE4E31A2A635D00D52D0E /* Sources */,
 				E99CE4E41A2A635D00D52D0E /* Frameworks */,
@@ -186,14 +190,14 @@
 			);
 			dependencies = (
 			);
-			name = ToyFutureTests;
-			productName = ToyFutureTests;
-			productReference = E99CE4E71A2A635D00D52D0E /* ToyFutureTests.xctest */;
+			name = Test;
+			productName = Test;
+			productReference = E99CE4E71A2A635D00D52D0E /* Test.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E99CE4F91A2A63B700D52D0E /* ToyFutureExample */ = {
+		E99CE4F91A2A63B700D52D0E /* Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E99CE4FE1A2A63B700D52D0E /* Build configuration list for PBXNativeTarget "ToyFutureExample" */;
+			buildConfigurationList = E99CE4FE1A2A63B700D52D0E /* Build configuration list for PBXNativeTarget "Example" */;
 			buildPhases = (
 				E99CE4F61A2A63B700D52D0E /* Sources */,
 				E99CE4F71A2A63B700D52D0E /* Frameworks */,
@@ -203,9 +207,9 @@
 			);
 			dependencies = (
 			);
-			name = ToyFutureExample;
-			productName = ToyFutureExample;
-			productReference = E99CE4FA1A2A63B700D52D0E /* ToyFutureExample */;
+			name = Example;
+			productName = Example;
+			productReference = E99CE4FA1A2A63B700D52D0E /* Example */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -240,9 +244,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E99CE4E61A2A635D00D52D0E /* ToyFutureTests */,
-				E99CE4F91A2A63B700D52D0E /* ToyFutureExample */,
-				E9546F981A30F88E00799DFE /* ToyFutureBenchmark */,
+				E99CE4E61A2A635D00D52D0E /* Test */,
+				E99CE4F91A2A63B700D52D0E /* Example */,
+				E9546F981A30F88E00799DFE /* Benchmark */,
 			);
 		};
 /* End PBXProject section */
@@ -402,7 +406,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = ToyFutureTests/Info.plist;
+				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -418,7 +422,7 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = ToyFutureTests/Info.plist;
+				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -446,7 +450,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E9546F9F1A30F88E00799DFE /* Build configuration list for PBXNativeTarget "ToyFutureBenchmark" */ = {
+		E9546F9F1A30F88E00799DFE /* Build configuration list for PBXNativeTarget "Benchmark" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E9546F9D1A30F88E00799DFE /* Debug */,
@@ -464,7 +468,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E99CE4F31A2A635D00D52D0E /* Build configuration list for PBXNativeTarget "ToyFutureTests" */ = {
+		E99CE4F31A2A635D00D52D0E /* Build configuration list for PBXNativeTarget "Test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E99CE4F41A2A635D00D52D0E /* Debug */,
@@ -473,7 +477,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E99CE4FE1A2A63B700D52D0E /* Build configuration list for PBXNativeTarget "ToyFutureExample" */ = {
+		E99CE4FE1A2A63B700D52D0E /* Build configuration list for PBXNativeTarget "Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E99CE4FF1A2A63B700D52D0E /* Debug */,
