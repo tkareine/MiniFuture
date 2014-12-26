@@ -6,14 +6,11 @@ class FutureTests: XCTestCase {
 
     XCTAssertTrue(fut.isCompleted)  // no need to wait with `get`
 
-    let res0 = fut.get()
+    let res = fut.get()
 
     XCTAssertTrue(fut.isCompleted)
-    XCTAssertEqual(res0.value!, 1)
-
-    let res1 = fut.get()
-
-    XCTAssertEqual(res1.description, "Success(1)")
+    XCTAssertEqual(res.description, "Success(1)")
+    XCTAssert(res === fut.get())
   }
 
   func testGetFailingImmediateFuture() {
@@ -36,14 +33,11 @@ class FutureTests: XCTestCase {
     XCTAssertFalse(fut.isCompleted)
 
     sem.signal()
-    let res0 = fut.get()
+    let res = fut.get()
 
     XCTAssertTrue(fut.isCompleted)
-    XCTAssertEqual(res0.description, "Success(1)")
-
-    let res1 = fut.get()
-
-    XCTAssertEqual(res0.description, "Success(1)")
+    XCTAssertEqual(res.description, "Success(1)")
+    XCTAssert(res === fut.get())
   }
 
   func testGetFailingAsyncFuture() {
@@ -115,7 +109,6 @@ class FutureTests: XCTestCase {
     XCTAssertTrue(fut0.isCompleted)
     XCTAssertFalse(fut1.isCompleted)
     XCTAssertFalse(fut2.isCompleted)
-
     XCTAssertEqual(res0.description, "Success([0, 1])")
 
     sem1.signal()
