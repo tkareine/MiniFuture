@@ -1,10 +1,12 @@
 DSTROOT ?= .
 INSTALL_PATH ?= /build
 
-.PHONY: clean test example
+.PHONY: test test-all clean example benchmark
 
 test:
 	xcodebuild -scheme Test -target Test test
+
+test-all: test example
 
 clean:
 	rm -fr build DerivedData
