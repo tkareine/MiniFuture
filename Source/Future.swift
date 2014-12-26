@@ -143,7 +143,9 @@ public class PromiseFuture<T>: Future<T> {
 
   public func complete(value: Try<T>) {
     let callbacks: [CompletionCallback] = condition.synchronized { _ in
-      assert(self.result == nil, "must complete only once")
+      if self.result != nil {
+        fatalError("PromiseFuture is already completed, don't complete me more than once")
+      }
 
       self.result = value
 
