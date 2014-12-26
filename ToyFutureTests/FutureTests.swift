@@ -48,6 +48,36 @@ class FutureTests: XCTestCase {
     XCTAssertEqual(res.description, "Failure(1)")
   }
 
+  func testGetSucceedingPromiseFuture() {
+    let sem = Semaphore()
+    let fut = Future<Int>.promise()
+
+    FutureExecution.dispatchAsync {
+      sem.wait()
+      fut.resolve(1)
+    }
+
+    XCTAssertFalse(fut.isCompleted)
+
+    sem.signal()
+    let res = fut.get()
+
+    XCTAssertTrue(fut.isCompleted)
+    XCTAssertEqual(res.description, "Success(1)")
+    XCTAssert(res === fut.get())
+  }
+
+  func testGetFailingPromiseFuture() {
+    let fut = Future<Int>.promise()
+
+    XCTAssertFalse(fut.isCompleted)
+
+    fut.reject("1")
+
+    XCTAssertTrue(fut.isCompleted)
+    XCTAssertEqual(fut.get().description, "Failure(1)")
+  }
+
   func testOnCompleteImmediateFuture() {
     let sem = Semaphore()
     let fut = Future.succeeded(1)
@@ -73,6 +103,27 @@ class FutureTests: XCTestCase {
     fut.onComplete { r in
       sem.signal()
       res = r
+    }
+
+    sem.wait()
+
+    XCTAssertTrue(fut.isCompleted)
+    XCTAssert(res === fut.get())
+    XCTAssertEqual(res.description, "Success(1)")
+  }
+
+  func testOnCompletePromiseFuture() {
+    let sem = Semaphore()
+    let fut = Future<Int>.promise()
+    var res: Try<Int>!
+
+    fut.onComplete { r in
+      sem.signal()
+      res = r
+    }
+
+    FutureExecution.dispatchAsync {
+      fut.resolve(1)
     }
 
     sem.wait()

@@ -1,6 +1,6 @@
 import Dispatch
 
-private struct FutureExecution {
+struct FutureExecution {
   private static var sharedQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
   typealias Group = dispatch_group_t
@@ -41,6 +41,10 @@ public class Future<T> {
 
   public class func fromTry(val: Try<T>) -> Future<T> {
     return ImmediateFuture(val)
+  }
+
+  public class func promise() -> PromiseFuture<T> {
+    return PromiseFuture()
   }
 
   public typealias CompletionCallback = Try<T> -> Void
@@ -129,7 +133,15 @@ public class PromiseFuture<T>: Future<T> {
     super.init(nil)
   }
 
-  private func complete(value: Try<T>) {
+  public func resolve(value: T) {
+    complete(Success(value))
+  }
+
+  public func reject(description: String) {
+    complete(Failure(description))
+  }
+
+  public func complete(value: Try<T>) {
     let callbacks: [CompletionCallback] = condition.synchronized { _ in
       assert(self.result == nil, "must complete only once")
 
