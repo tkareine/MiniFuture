@@ -1,19 +1,18 @@
+DSTROOT ?= .
+INSTALL_PATH ?= /build
+
 .PHONY: clean test example
 
 test:
-	xcodebuild -scheme Test -target Test clean test
+	xcodebuild -scheme Test -target Test test
 
 clean:
-	rm -fr Build
+	rm -fr build DerivedData
 
-Build/Example:
-	xcodebuild -scheme Example -target Example clean install DSTROOT=. INSTALL_PATH=/Build
+example:
+	xcodebuild -scheme Example -target Example install DSTROOT=$(DSTROOT)  INSTALL_PATH=$(INSTALL_PATH)
+	./build/Example
 
-Build/Benchmark:
-	xcodebuild -scheme Benchmark -target Benchmark clean install DSTROOT=. INSTALL_PATH=/Build
-
-example: clean Build/Example
-	./Build/Example
-
-benchmark: clean Build/Benchmark
-	./Build/Benchmark
+benchmark:
+	xcodebuild -scheme Benchmark -target Benchmark install DSTROOT=$(DSTROOT) INSTALL_PATH=$(INSTALL_PATH)
+	./build/Benchmark

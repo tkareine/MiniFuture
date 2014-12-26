@@ -91,7 +91,6 @@
 			children = (
 				E9546F9B1A30F88E00799DFE /* main.swift */,
 			);
-			name = Benchmark;
 			path = Benchmark;
 			sourceTree = "<group>";
 		};
@@ -126,7 +125,6 @@
 				E9F433CF1A33080800F8F0AC /* Semaphore.swift */,
 				E99CE5031A2A642600D52D0E /* Future.swift */,
 			);
-			name = Source;
 			path = Source;
 			sourceTree = "<group>";
 		};
@@ -137,7 +135,6 @@
 				E99CE5071A2A65D400D52D0E /* FutureTests.swift */,
 				E99CE4EC1A2A635D00D52D0E /* Supporting Files */,
 			);
-			name = Test;
 			path = Test;
 			sourceTree = "<group>";
 		};
@@ -154,7 +151,6 @@
 			children = (
 				E99CE4FC1A2A63B700D52D0E /* main.swift */,
 			);
-			name = Example;
 			path = Example;
 			sourceTree = "<group>";
 		};
@@ -303,10 +299,12 @@
 		E9546F9D1A30F88E00799DFE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DSTROOT = .;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				INSTALL_PATH = /build;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -315,6 +313,8 @@
 		E9546F9E1A30F88E00799DFE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DSTROOT = .;
+				INSTALL_PATH = /build;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -431,10 +431,12 @@
 		E99CE4FF1A2A63B700D52D0E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DSTROOT = .;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				INSTALL_PATH = /build;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -443,6 +445,8 @@
 		E99CE5001A2A63B700D52D0E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DSTROOT = .;
+				INSTALL_PATH = /build;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

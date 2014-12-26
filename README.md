@@ -73,10 +73,14 @@ futBegin.get()  // Success(0)
 futEnd.get()    // Success([0, 10, 11, 20, 21])
 ```
 
-See more in `Example/main.swift`. They're runnable:
+See more in `Example/main.swift`. You can run the examples:
 
 ```
 $ make example
+# xcodebuild output...
+
+./build/Example
+ok!
 ```
 
 Performance
@@ -99,6 +103,9 @@ MHz DDR3:
 
 ```
 $ make benchmark
+# xcodebuild output...
+
+./build/Benchmark
 iterations: 100, futures composed: 2000
 
 warm up: 220 ms (± 3 ms)
