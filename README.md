@@ -27,9 +27,10 @@ Future library wraps exceptions thrown inside future computations to
 `Failure` values. In ToyFuture, you must do this yourself.
 
 All async operations run in libdispatch's default global concurrent
-queue. Closures passed to `Future#flatMap` and `Future#onComplete`
-always execute in a queue worker thread.  Use synchronization as
-appropriate when accessing state outside the Future.
+queue. Closures passed to `Future#flatMap`, `Future#onComplete`, and
+`Future.async` always execute in a queue worker thread. Use
+synchronization as appropriate when accessing shared state outside the
+parameters the futures pass to the closures.
 
 Usage
 -----
@@ -38,11 +39,15 @@ To get a Future job running, use `Future.succeeded` and
 `Future.failed` to wrap immediate values. Use `Future.async` for async
 jobs that compute the value later in a queue worker thread.
 
-After this, use the `Future#flatMap` operation of the returned future
-to compose another future that depends on the completed result of the
-previous future. Use `Future#get` to wait for the result of a
-future. Use `Future#onComplete` to add a callback to be run when the
-future completes.
+For adapting existing asynchronous interfaces with Futures, use
+`Future.promise`. It returns a future that you complete with success
+(`Future#resolve`) or failure (`Future#reject`) explicitly.
+
+When you get a handle to a future, use `Future#flatMap` to compose
+another future that depends on the completed result of the previous
+future. Use `Future#get` to wait for the result of a future. Use
+`Future#onComplete` to add a callback to be run when the future
+completes.
 
 ### Example
 
