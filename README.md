@@ -73,7 +73,11 @@ futBegin.get()  // Success(0)
 futEnd.get()    // Success([0, 10, 11, 20, 21])
 ```
 
-See more in `Example/main.swift`.
+See more in `Example/main.swift`. They're runnable:
+
+```
+$ make example
+```
 
 Performance
 -----------
@@ -94,7 +98,7 @@ Example run with MacBook Pro 2.6 GHz Intel Core i7 Haswell, 16 GB 1600
 MHz DDR3:
 
 ```
-$ ./Benchmark
+$ make benchmark
 iterations: 100, futures composed: 2000
 
 warm up: 220 ms (± 3 ms)
