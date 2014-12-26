@@ -1,3 +1,7 @@
+import Foundation
+
+let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+
 func assertToString<T>(actual: T, expected: String) {
   assert(toString(actual) == expected)
 }
@@ -8,15 +12,39 @@ func immediateFuturesExample() {
   assert(succeeded.isCompleted)
   assertToString(succeeded.get(), "Success(1)")
 
-  let failed = Future<Int>.failed("2")
+  let failed = Future<Int>.failed("deliberate")
 
   assert(failed.isCompleted)
-  assertToString(failed.get(), "Failure(2)")
+  assertToString(failed.get(), "Failure(deliberate)")
 }
 
-func simpleAsyncFuturesExample() {
-  assertToString(Future.async { Success([1]) }.get(), "Success([1])")
-  assertToString(Future.async { Failure<[Int]>(toString([2])) }.get(), "Failure([2])")
+func asyncFuturesExample() {
+  let succeeding = Future<Int>.async {
+    NSThread.sleepForTimeInterval(0.2)
+    return Success(1)
+  }
+  assertToString(succeeding.get(), "Success(1)")
+
+  let failing = Future<Int>.async {
+    NSThread.sleepForTimeInterval(0.2)
+    return Failure("deliberate")
+  }
+  assertToString(failing.get(), "Failure(deliberate)")
+}
+
+func promiseFuturesExample() {
+  let fut = Future<Int>.promise()
+
+  dispatch_async(queue) {
+    NSThread.sleepForTimeInterval(0.2)
+    fut.resolve(1)
+  }
+
+  assert(fut.isCompleted == false)
+
+  let result = fut.get()
+  assert(fut.isCompleted == true)
+  assertToString(result, "Success(1)")
 }
 
 func outerChainingFuturesExample() {
@@ -65,7 +93,8 @@ func innerAndOuterChainingAsyncFuturesExample() {
 }
 
 immediateFuturesExample()
-simpleAsyncFuturesExample()
+asyncFuturesExample()
+promiseFuturesExample()
 outerChainingFuturesExample()
 innerChainingFuturesExample()
 innerAndOuterChainingAsyncFuturesExample()
