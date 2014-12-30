@@ -10,6 +10,7 @@ class FutureTests: XCTestCase {
 
     XCTAssertTrue(fut.isCompleted)
     XCTAssertEqual(res.description, "Success(1)")
+    XCTAssertEqual(fut.description, "ImmediateFuture(Optional(Success(1)))")
     XCTAssert(res === fut.get())
   }
 
@@ -21,6 +22,7 @@ class FutureTests: XCTestCase {
     let res = fut.get()
 
     XCTAssertEqual(fut.get().description, "Failure(1)")
+    XCTAssertEqual(fut.description, "ImmediateFuture(Optional(Failure(1)))")
   }
 
   func testGetSucceedingAsyncFuture() {
@@ -31,12 +33,14 @@ class FutureTests: XCTestCase {
     }
 
     XCTAssertFalse(fut.isCompleted)
+    XCTAssertEqual(fut.description, "AsyncFuture(nil)")
 
     sem.signal()
     let res = fut.get()
 
     XCTAssertTrue(fut.isCompleted)
     XCTAssertEqual(res.description, "Success(1)")
+    XCTAssertEqual(fut.description, "AsyncFuture(Optional(Success(1)))")
     XCTAssert(res === fut.get())
   }
 
@@ -46,6 +50,7 @@ class FutureTests: XCTestCase {
 
     XCTAssertTrue(fut.isCompleted)
     XCTAssertEqual(res.description, "Failure(1)")
+    XCTAssertEqual(fut.description, "AsyncFuture(Optional(Failure(1)))")
   }
 
   func testGetSucceedingPromiseFuture() {
@@ -58,12 +63,14 @@ class FutureTests: XCTestCase {
     }
 
     XCTAssertFalse(fut.isCompleted)
+    XCTAssertEqual(fut.description, "PromiseFuture(nil)")
 
     sem.signal()
     let res = fut.get()
 
     XCTAssertTrue(fut.isCompleted)
     XCTAssertEqual(res.description, "Success(1)")
+    XCTAssertEqual(fut.description, "PromiseFuture(Optional(Success(1)))")
     XCTAssert(res === fut.get())
   }
 
@@ -76,6 +83,7 @@ class FutureTests: XCTestCase {
 
     XCTAssertTrue(fut.isCompleted)
     XCTAssertEqual(fut.get().description, "Failure(1)")
+    XCTAssertEqual(fut.description, "PromiseFuture(Optional(Failure(1)))")
   }
 
   func testOnCompleteImmediateFuture() {
