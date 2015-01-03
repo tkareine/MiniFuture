@@ -1,9 +1,20 @@
 import Foundation
 
-let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-
 func assertToString<T>(actual: T, expected: String) {
   assert(toString(actual) == expected)
+}
+
+extension String {
+  func excerpt(maxLength: Int) -> String {
+    let length = countElements(self)
+
+    if length <= maxLength {
+      return self
+    }
+
+    let idx = advance(self.startIndex, maxLength)
+    return self[Range(start: self.startIndex, end: idx)] + "…"
+  }
 }
 
 func immediateFuturesExample() {
@@ -33,6 +44,7 @@ func asyncFuturesExample() {
 }
 
 func promiseFuturesExample() {
+  let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
   let fut = Future<Int>.promise()
 
   dispatch_async(queue) {
@@ -92,11 +104,74 @@ func innerAndOuterChainingAsyncFuturesExample() {
   assertToString(futEnd.get(), "Success([0, 10, 11, 20, 21])")
 }
 
+func realisticFutureExample() {
+  /* Request a web resource asynchronously, immediately returning a handle to
+   * the job as a promise kind of Future. When NSURLSession calls the completion
+   * handler, we fullfill the promise. If the completion handler gets called
+   * with the contents of the web resource, we resolve the promise with the
+   * contents (the success case). Otherwise, we reject the promise with failure.
+   */
+  func loadURL(url: NSURL) -> Future<NSData> {
+    let promise = Future<NSData>.promise()
+    let task = NSURLSession.sharedSession().dataTaskWithURL(url, completionHandler: { data, response, error in
+      if error != nil {
+        promise.reject("failed loading URL: \(url)")
+      } else if let d = data {
+        promise.resolve(d)
+      } else {
+        promise.reject("unknown error at loading URL: \(url)")
+      }
+    })
+    task.resume()
+    return promise
+  }
+
+  /* Initiate a background job for parsing data as HTML document, finding
+   * specific contents from it with an XPath query. We immediately return async
+   * kind of Future as a handle to the job. If we can parse the data as HTML
+   * document and find the contents for the query, we complete the Future with
+   * the contents (a success value). Otherwise, we complete the Future with
+   * failure.
+   */
+  func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
+    return Future.async {
+      var err: NSError?
+
+      if let doc = HTMLDocument.readDataAsUTF8(data, error: &err) {
+        if let node = doc.rootHTMLNode(&err) {
+          if let found = node.nodeForXPath(xpath, error: &err) {
+            return Success(found)
+          }
+        }
+      }
+
+      if let e = err {
+        return Failure("failed parsing HTML: \(e)")
+      } else {
+        return Failure("unknown error at parsing HTML")
+      }
+    }
+  }
+
+  let wikipediaURL = NSURL(string: "https://en.wikipedia.org/wiki/Main_Page")!
+  let featuredArticleXPath = "//*[@id='mp-tfa']"
+
+  let result = loadURL(wikipediaURL)
+    .flatMap { readXPathFromHTML(featuredArticleXPath, $0) }
+    .get()
+
+  if let success = result as? Success {
+    let excerpt = success.val.textContents!.excerpt(72)
+    println("Excerpt from today's featured article at Wikipedia: \(excerpt)")
+  } else {
+    println("Error getting today's featured article from Wikipedia: \((result as Failure).desc)")
+  }
+}
+
 immediateFuturesExample()
 asyncFuturesExample()
 promiseFuturesExample()
 outerChainingFuturesExample()
 innerChainingFuturesExample()
 innerAndOuterChainingAsyncFuturesExample()
-
-println("ok!")
+realisticFutureExample()

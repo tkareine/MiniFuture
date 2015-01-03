@@ -19,58 +19,120 @@ object as a string.
 
 Future composition with `Future#flatMap` either continues the
 composition chain or short-circuits based on the resolved `Try<T>`
-object of the current future.
+object of the current Future.
 
 We use explicit success and failure objects, because you can't use
 exceptions in Swift. The idea is inspired from Scala 2.10, where the
-Future library wraps exceptions thrown inside future computations to
+Future library wraps exceptions thrown inside Future computations to
 `Failure` values. In ToyFuture, you must do this yourself.
 
 All async operations run in libdispatch's default global concurrent
 queue. Closures passed to `Future#flatMap`, `Future#onComplete`, and
 `Future.async` always execute in a queue worker thread. Use
 synchronization as appropriate when accessing shared state outside the
-parameters the futures pass to the closures.
+parameters the Futures pass to the closures.
 
 Usage
 -----
 
 To get a Future job running, use `Future.succeeded` and
-`Future.failed` to wrap immediate values. Use `Future.async` for async
-jobs that compute the value later in a queue worker thread.
+`Future.failed` to wrap immediate values. These return a Future that
+is already completed with success or failure value, respectively.
+
+Use `Future.async` for async jobs that compute the value later in a
+queue worker thread. You pass a block to `Future.async` and return
+either a `Success` or `Failure` value from it.
 
 For adapting existing asynchronous interfaces with Futures, use
-`Future.promise`. It returns a future that you complete with success
-(`Future#resolve`) or failure (`Future#reject`) explicitly.
+`Future.promise`. This is a promise kind of Future. Pass the Future to
+an existing asynchronous interface, and in the completion handler of
+the interface, complete the Future with success (`Future#resolve`) or
+failure (`Future#reject`). You can immediately return the Future to
+code expecting Futures and let the Future complete later.
 
-When you get a handle to a future, use `Future#flatMap` to compose
-another future that depends on the completed result of the previous
-future. Use `Future#get` to wait for the result of a future. Use
-`Future#onComplete` to add a callback to be run when the future
+When you get a handle to a Future, use `Future#flatMap` to compose
+another Future that depends on the completed result of the previous
+Future. Use `Future#get` to wait for the result of a Future. Use
+`Future#onComplete` to add a callback to be run when the Future
 completes.
 
 ### Example
 
 ```swift
-let futBegin = Future.async { Success(0) }
-let futEnd: Future<[Int]> = futBegin.flatMap { e0 in
-  let futIn0 = Future.succeeded(10).flatMap { e1 in
-    Future.async { Success([e1] + [11]) }
-  }
+extension String {
+  func excerpt(maxLength: Int) -> String {
+    let length = countElements(self)
 
-  let futIn1 = Future.succeeded([20]).flatMap {
-    Future.succeeded($0 + [21])
-  }
+    if length <= maxLength {
+      return self
+    }
 
-  return futIn0.flatMap { e1 in
-    return futIn1.flatMap { e2 in
-      Future.succeeded([e0] + e1 + e2)
+    let idx = advance(self.startIndex, maxLength)
+    return self[Range(start: self.startIndex, end: idx)] + "…"
+  }
+}
+
+/* Request web resource asynchronously, immediately returning a handle to the
+ * job as a promise kind of Future. When NSURLSession calls the completion
+ * handler, we fullfill the promise. If the completion handler gets called
+ * with the contents of the web resource, we resolve the promise with the
+ * contents (the success case). Otherwise, we reject the promise with failure.
+ */
+func loadURL(url: NSURL) -> Future<NSData> {
+  let promise = Future<NSData>.promise()
+  let task = NSURLSession.sharedSession().dataTaskWithURL(url, completionHandler: { data, response, error in
+    if error != nil {
+      promise.reject("failed loading URL: \(url)")
+    } else if let d = data {
+      promise.resolve(d)
+    } else {
+      promise.reject("unknown error at loading URL: \(url)")
+    }
+  })
+  task.resume()
+  return promise
+}
+
+/* Initiate a background job for parsing data as HTML document, finding
+ * specific contents from it with XPath query. We immediately return async
+ * kind of Future as a handle to the job. If we can parse the data as HTML
+ * document and find the contents for the query, we complete the Future with
+ * the contents, a success value. Otherwise, we complete the Future with
+ * failure.
+ */
+func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
+  return Future.async {
+    var err: NSError?
+
+    if let doc = HTMLDocument.readDataAsUTF8(data, error: &err) {
+      if let node = doc.rootHTMLNode(&err) {
+        if let found = node.nodeForXPath(xpath, error: &err) {
+          return Success(found)
+        }
+      }
+    }
+
+    if let e = err {
+      return Failure("failed parsing HTML: \(e)")
+    } else {
+      return Failure("unknown error at parsing HTML")
     }
   }
 }
 
-futBegin.get()  // Success(0)
-futEnd.get()    // Success([0, 10, 11, 20, 21])
+let wikipediaURL = NSURL(string: "https://en.wikipedia.org/wiki/Main_Page")!
+let featuredArticleXPath = "//*[@id='mp-tfa']"
+
+let result = loadURL(wikipediaURL)
+  .flatMap { readXPathFromHTML(featuredArticleXPath, $0) }
+  .get()
+
+if let success = result as? Success {
+  let excerpt = success.val.textContents!.excerpt(72)
+  println("Excerpt from today's featured article at Wikipedia: \(excerpt)")
+} else {
+  println("Error getting today's featured article from Wikipedia: \((result as Failure).desc)")
+}
 ```
 
 See more in `Example/main.swift`. You can run the examples:
@@ -80,20 +142,22 @@ $ make example
 # xcodebuild output...
 
 ./build/Example
-ok!
+Excerpt from today's featured article at Wikipedia:
+
+Oliver Bosbyshell (1839–1921) was Superintendent of the United States …
 ```
 
 Performance
 -----------
 
 There's a benchmark in `Benchmark/main.swift`. It builds up complex
-nested futures (the `futEnd` variable in the code) in a loop
+nested Futures (the `futEnd` variable in the code) in a loop
 `NumberOfFutureCompositions` times and chains them into one big
-composite future (the `fut` variable). Then the benchmark waits for
-the future to complete.
+composite Future (the `fut` variable). Then the benchmark waits for
+the Future to complete.
 
 We repeat this `NumberOfIterations` times to get the arithmetic mean
-and standard deviation of time spent completing each composite future.
+and standard deviation of time spent completing each composite Future.
 
 Compile it with Release build configuration, which enables `-O`
 compiler flag. Then run it from the terminal.
@@ -122,5 +186,5 @@ Future work
 * Maybe Swift will support enumerations with generified associated
   values later? When that happens, consider implementing `Try<T>` as
   an enumeration. This should help pattern matching on `Try<T>`.
-* Implement future cancellation and timeouts
-* Implement more composition operations on futures
+* Implement Future cancellation and timeouts
+* Implement more composition operations on Futures
