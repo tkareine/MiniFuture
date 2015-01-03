@@ -52,7 +52,6 @@
 		E909FD151A30DF46003537CC /* Condition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Condition.swift; sourceTree = "<group>"; };
 		E91C4ACA1A3364FF00E620AC /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E91C4ACB1A3364FF00E620AC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		E9300E351A573F5200DDC449 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		E942A48D1A2FA50D00781DC5 /* TryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryTests.swift; sourceTree = "<group>"; };
 		E9546F991A30F88E00799DFE /* Benchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Benchmark; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9546F9B1A30F88E00799DFE /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -111,8 +110,6 @@
 		E99CE4D31A2A635D00D52D0E = {
 			isa = PBXGroup;
 			children = (
-				E96490911A5770B00061F232 /* libxml2.2.dylib */,
-				E9300E351A573F5200DDC449 /* libxml2.dylib */,
 				E91C4ACB1A3364FF00E620AC /* README.md */,
 				E91C4ACA1A3364FF00E620AC /* LICENSE.txt */,
 				E99CE4DE1A2A635D00D52D0E /* Source */,
@@ -173,6 +170,7 @@
 				E964908F1A5767690061F232 /* HTMLNode.m */,
 				E96490951A5784750061F232 /* HTMLDocument.h */,
 				E96490961A5784750061F232 /* HTMLDocument.m */,
+				E96490911A5770B00061F232 /* libxml2.2.dylib */,
 			);
 			path = Example;
 			sourceTree = "<group>";
