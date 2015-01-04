@@ -72,8 +72,8 @@ extension String {
   }
 }
 
-/* Request web resource asynchronously, immediately returning a handle to the
- * job as a promise kind of Future. When NSURLSession calls the completion
+/* Request a web resource asynchronously, immediately returning a handle to
+ * the job as a promise kind of Future. When NSURLSession calls the completion
  * handler, we fullfill the promise. If the completion handler gets called
  * with the contents of the web resource, we resolve the promise with the
  * contents (the success case). Otherwise, we reject the promise with failure.
@@ -93,30 +93,30 @@ func loadURL(url: NSURL) -> Future<NSData> {
   return promise
 }
 
-/* Initiate a background job for parsing data as HTML document, finding
- * specific contents from it with XPath query. We immediately return async
- * kind of Future as a handle to the job. If we can parse the data as HTML
- * document and find the contents for the query, we complete the Future with
- * the contents, a success value. Otherwise, we complete the Future with
- * failure.
+/* Parse data as HTML document, finding specific contents from it with an
+ * XPath query. We return a completed Future as the handle to the result. If
+ * we can parse the data as an HTML document and the query succeeds, we return
+ * a successful Future with the query result. Otherwise, we return failed
+ * Future describing the error.
+ *
+ * Because this function gets called inside `Future#flatMap`, it's run in
+ * backround in a queue worker thread.
  */
 func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
-  return Future.async {
-    var err: NSError?
+  var err: NSError?
 
-    if let doc = HTMLDocument.readDataAsUTF8(data, error: &err) {
-      if let node = doc.rootHTMLNode(&err) {
-        if let found = node.nodeForXPath(xpath, error: &err) {
-          return Success(found)
-        }
+  if let doc = HTMLDocument.readDataAsUTF8(data, error: &err) {
+    if let node = doc.rootHTMLNode(&err) {
+      if let found = node.nodeForXPath(xpath, error: &err) {
+        return Future.succeeded(found)
       }
     }
+  }
 
-    if let e = err {
-      return Failure("failed parsing HTML: \(e)")
-    } else {
-      return Failure("unknown error at parsing HTML")
-    }
+  if let e = err {
+    return Future.failed("failed parsing HTML: \(e)")
+  } else {
+    return Future.failed("unknown error at parsing HTML")
   }
 }
 
@@ -124,7 +124,15 @@ let wikipediaURL = NSURL(string: "https://en.wikipedia.org/wiki/Main_Page")!
 let featuredArticleXPath = "//*[@id='mp-tfa']"
 
 let result = loadURL(wikipediaURL)
+  /* Future composition (chaining): when this Future completes successfully,
+   * pass its result to a function that does more work, returning another
+   * Future. If this Future completes with a failure, the chain short-circuits
+   * and further flatMap methods are not called. Calls to flatMap are always
+   * executed in a queue worker thread.
+   */
   .flatMap { readXPathFromHTML(featuredArticleXPath, $0) }
+  /* Wait for Future chain to complete. This acts as a synchronization point.
+   */
   .get()
 
 if let success = result as? Success {
