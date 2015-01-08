@@ -1,12 +1,15 @@
 DSTROOT ?= .
 INSTALL_PATH ?= /build
 
-.PHONY: test test-all clean example benchmark
+.PHONY: test-all test-ios test-mac clean example benchmark
 
-test:
-	xcodebuild -scheme Test -target Test test
+test-all: test-ios test-mac example
 
-test-all: test example
+test-ios:
+	xcodebuild -scheme Test-ios -target Test-ios -destination 'platform=iOS Simulator,name=iPhone 5s,OS=latest' -destination-timeout 10 test
+
+test-mac:
+	xcodebuild -scheme Test-mac -target Test-mac -destination 'platform=OS X,arch=x86_64' -destination-timeout 10 test
 
 clean:
 	rm -fr build DerivedData

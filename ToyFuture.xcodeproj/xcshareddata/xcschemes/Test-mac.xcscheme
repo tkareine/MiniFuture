@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E99CE4E61A2A635D00D52D0E"
-               BuildableName = "Test.xctest"
-               BlueprintName = "Test"
+               BuildableName = "Test-mac.xctest"
+               BlueprintName = "Test-mac"
                ReferencedContainer = "container:ToyFuture.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E99CE4E61A2A635D00D52D0E"
-               BuildableName = "Test.xctest"
-               BlueprintName = "Test"
+               BuildableName = "Test-mac.xctest"
+               BlueprintName = "Test-mac"
                ReferencedContainer = "container:ToyFuture.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E99CE4E61A2A635D00D52D0E"
-            BuildableName = "Test.xctest"
-            BlueprintName = "Test"
+            BuildableName = "Test-mac.xctest"
+            BlueprintName = "Test-mac"
             ReferencedContainer = "container:ToyFuture.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -80,8 +80,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E99CE4E61A2A635D00D52D0E"
-            BuildableName = "Test.xctest"
-            BlueprintName = "Test"
+            BuildableName = "Test-mac.xctest"
+            BlueprintName = "Test-mac"
             ReferencedContainer = "container:ToyFuture.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
