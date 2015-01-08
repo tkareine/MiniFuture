@@ -1,73 +1,80 @@
 import Foundation
 
-public class Try<T>: Printable {
-  public let value: T?
+public enum Try<T> {
+  // replace `@autoclosure () -> T` with just `T` when Swift supports generic associated values
+  case Success(@autoclosure () -> T)
+  case Failure(String)
 
-  private init() {}
-
-  private init(_ val: T) {
-    value = val
+  public func flatMap<U>(f: T -> Try<U>) -> Try<U> {
+    switch self {
+    case Success(let val):
+      return f(val())
+    case Failure(let desc):
+      return .Failure(desc)
+    }
   }
 
-  public var description: String {
-    fatalError("must be implemented in a subclass")
+  public func map<U>(f: T -> U) -> Try<U> {
+    return flatMap { e in .Success(f(e)) }
+  }
+
+  public var value: T? {
+    switch self {
+    case Success(let val):
+      return val()
+    case Failure:
+      return nil
+    }
+  }
+
+  public var failureDescription: String? {
+    switch self {
+    case Success:
+      return nil
+    case Failure(let desc):
+      return desc
+    }
   }
 
   public var isSuccess: Bool {
-    fatalError("must be implemented in a subclass")
+    switch self {
+    case Success:
+      return true
+    case Failure:
+      return false
+    }
   }
 
   public var isFailure: Bool {
     return !isSuccess
   }
+}
 
-  public func flatMap<U>(f: T -> Try<U>) -> Try<U> {
+extension Try: Printable {
+  public var description: String {
     switch self {
-    case let s as Success<T>:
-      return f(s.val)
-    case let f as Failure<T>:
-      return Failure(f.desc)
-    default:
-      fatalError("unknown Try type")
+    case Success(let val):
+      return "Success(\(val()))"
+    case Failure(let desc):
+      return "Failure(\(desc))"
     }
   }
-
-  public func map<U>(f: T -> U) -> Try<U> {
-    return flatMap { e in Success(f(e)) }
-  }
 }
 
-public class Success<T>: Try<T> {
-  public var val: T {
-    return value!
-  }
-
-  public override init(_ val: T) {
-    super.init(val)
-  }
-
-  override public var description: String {
-    return "Success(\(val))"
-  }
-
-  override public var isSuccess: Bool {
-    return true
-  }
-}
-
-public class Failure<T>: Try<T> {
-  public let desc: String
-
-  public init(_ d: String) {
-    desc = d
-    super.init()
-  }
-
-  override public var description: String {
-    return "Failure(\(desc))"
-  }
-
-  override public var isSuccess: Bool {
+/* Try enumeration does not adopt Equatable protocol, because that would limit
+ * the allowed values of generic type T. Instead, we provide these helpers:
+ */
+func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
+  switch (lhs, rhs) {
+  case (.Success(let lhsVal), .Success(let rhsVal)):
+    return lhsVal() == rhsVal()
+  case (.Failure(let lhsDesc), .Failure(let rhsDesc)):
+    return lhsDesc == rhsDesc
+  default:
     return false
   }
+}
+
+func !=<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
+  return !(lhs == rhs)
 }
