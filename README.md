@@ -10,18 +10,18 @@ probably shouldn't use this in production.*
 Characteristics
 ---------------
 
-We use `Try<T>` and its two concrete subclass implementations,
-`Success<T>` and `Failure<T>` as helpers. The first is meant for the
-caller of the Future to signify successful computation. The result of
-the computation is wrapped inside the object. The latter sublass
-signifies computation failure, and you can describe the failure in the
-object as a string.
+We use `Try<T>` value type as a helper. It's an enumeration with two
+members, `Success` and `Failure`. The first is meant for the caller of
+the Future to signify successful computation, with the result of the
+computation as the associated value of type `T`. The latter member
+signifies computation failure. You describe the failure with the
+associated value of String type.
 
 Future composition with `Future#flatMap` either continues the
 composition chain or short-circuits based on the resolved `Try<T>`
 object of the current Future.
 
-We use explicit success and failure objects, because you can't use
+We use explicit success and failure values, because you can't use
 exceptions in Swift. The idea is inspired from Scala 2.10, where the
 Future library wraps exceptions thrown inside Future computations to
 `Failure` values. In ToyFuture, you must do this yourself.
@@ -135,11 +135,12 @@ let result = loadURL(wikipediaURL)
    */
   .get()
 
-if let success = result as? Success {
-  let excerpt = success.val.textContents!.excerpt(72)
+switch result {
+case .Success(let result):
+  let excerpt = result().textContents!.excerpt(72)
   println("Excerpt from today's featured article at Wikipedia: \(excerpt)")
-} else {
-  println("Error getting today's featured article from Wikipedia: \((result as Failure).desc)")
+case .Failure(let desc):
+  println("Error getting today's featured article from Wikipedia: \(desc)")
 }
 ```
 
@@ -189,10 +190,5 @@ Total memory consumption of the process stayed below 50 MB.
 Future work
 -----------
 
-* Should `Try<T>` be replaced with `Either<L, R>`, so that the client
-  could decide the type for failure cases?
-* Maybe Swift will support enumerations with generified associated
-  values later? When that happens, consider implementing `Try<T>` as
-  an enumeration. This should help pattern matching on `Try<T>`.
 * Implement Future cancellation and timeouts
 * Implement more composition operations on Futures
