@@ -26,7 +26,7 @@ struct FutureExecution {
   }
 }
 
-public class Future<T>: Printable {
+public class Future<T> {
   public class func async(block: () -> Try<T>) -> Future<T> {
     return AsyncFuture(block)
   }
@@ -53,10 +53,6 @@ public class Future<T>: Printable {
 
   public var isCompleted: Bool {
     return result != nil
-  }
-
-  public var description: String {
-    return "\(futureName)(\(result))"
   }
 
   private var futureName: String {
@@ -95,7 +91,7 @@ public class Future<T>: Printable {
 }
 
 public class ImmediateFuture<T>: Future<T> {
-  override var futureName: String {
+  override private var futureName: String {
     return "ImmediateFuture"
   }
 
@@ -116,7 +112,7 @@ public class ImmediateFuture<T>: Future<T> {
 public class AsyncFuture<T>: Future<T> {
   private let Group = FutureExecution.newGroup()
 
-  override var futureName: String {
+  override private var futureName: String {
     return "AsyncFuture"
   }
 
@@ -143,7 +139,7 @@ public class PromiseFuture<T>: Future<T> {
   private let condition = Condition()
   private var completionCallbacks: [CompletionCallback] = []
 
-  override var futureName: String {
+  override private var futureName: String {
     return "PromiseFuture"
   }
 
@@ -204,5 +200,22 @@ public class PromiseFuture<T>: Future<T> {
     if let r = res {
       FutureExecution.dispatchAsync { block(r) }
     }
+  }
+}
+
+extension Future: Printable, DebugPrintable {
+  public var description: String {
+    return describeWith(print)
+  }
+
+  public var debugDescription: String {
+    return describeWith(debugPrint)
+  }
+
+  private func describeWith(printFn: (Any, inout String) -> Void) -> String {
+    var str = "\(futureName)("
+    printFn(result, &str)
+    print(")", &str)
+    return str
   }
 }

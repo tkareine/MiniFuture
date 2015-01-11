@@ -26,7 +26,7 @@ func immediateFuturesExample() {
   let failed = Future<Int>.failed("deliberate")
 
   assert(failed.isCompleted)
-  assertToString(failed.get(), "Failure(deliberate)")
+  assertToString(failed.get(), "Failure(\"deliberate\")")
 }
 
 func asyncFuturesExample() {
@@ -40,7 +40,7 @@ func asyncFuturesExample() {
     NSThread.sleepForTimeInterval(0.2)
     return .Failure("deliberate")
   }
-  assertToString(failing.get(), "Failure(deliberate)")
+  assertToString(failing.get(), "Failure(\"deliberate\")")
 }
 
 func promiseFuturesExample() {
@@ -67,8 +67,8 @@ func outerChainingFuturesExample() {
 
   assertToString(fut0.get(), "Success(0)")
   assertToString(fut1.get(), "Success([0, 1])")
-  assertToString(fut2.get(), "Failure([0, 1, 2])")
-  assertToString(fut3.get(), "Failure([0, 1, 2])")
+  assertToString(fut2.get(), "Failure(\"[0, 1, 2]\")")
+  assertToString(fut3.get(), "Failure(\"[0, 1, 2]\")")
 }
 
 func innerChainingFuturesExample() {
@@ -79,7 +79,7 @@ func innerChainingFuturesExample() {
     }
   }
 
-  assertToString(fut.get(), "Failure([0, 1, 2])")
+  assertToString(fut.get(), "Failure(\"[0, 1, 2]\")")
 }
 
 func innerAndOuterChainingAsyncFuturesExample() {

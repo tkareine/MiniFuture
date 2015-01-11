@@ -2,12 +2,13 @@ import XCTest
 
 class TryTests: XCTestCase {
   func testSuccess() {
-    let t = Try.Success(1)
+    let t = Try.Success(["a", "b"])
 
-    XCTAssertEqual(t.value!, 1)
+    XCTAssert(t.value! == ["a", "b"])
     XCTAssertTrue(t.isSuccess)
     XCTAssertFalse(t.isFailure)
-    XCTAssertEqual(t.description, "Success(1)")
+    XCTAssertEqual(t.description, "Success([a, b])")
+    XCTAssertEqual(t.debugDescription, "Success([\"a\", \"b\"])")
   }
 
   func testFailure() {
@@ -17,7 +18,8 @@ class TryTests: XCTestCase {
     XCTAssertEqual(t.failureDescription!, "2")
     XCTAssertFalse(t.isSuccess)
     XCTAssertTrue(t.isFailure)
-    XCTAssertEqual(t.description, "Failure(2)")
+    XCTAssertEqual(t.description, "Failure(\"2\")")
+    XCTAssertEqual(t.debugDescription, "Failure(\"2\")")
   }
 
   func testFlatMap() {
@@ -26,8 +28,8 @@ class TryTests: XCTestCase {
     let t2 = t1.flatMap { e in .Success(e + [4]) }
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
-    XCTAssertEqual(t1.description, "Failure([1, 2, 3])")
-    XCTAssertEqual(t2.description, "Failure([1, 2, 3])")
+    XCTAssertEqual(t1.description, "Failure(\"[1, 2, 3]\")")
+    XCTAssertEqual(t2.description, "Failure(\"[1, 2, 3]\")")
   }
 
   func testMap() {
@@ -36,8 +38,8 @@ class TryTests: XCTestCase {
     let t2 = t1.map { e in e + [4] }
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
-    XCTAssertEqual(t1.description, "Failure([1, 2, 3])")
-    XCTAssertEqual(t2.description, "Failure([1, 2, 3])")
+    XCTAssertEqual(t1.description, "Failure(\"[1, 2, 3]\")")
+    XCTAssertEqual(t2.description, "Failure(\"[1, 2, 3]\")")
   }
 
   func testEquality() {

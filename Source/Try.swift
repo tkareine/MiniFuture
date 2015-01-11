@@ -50,13 +50,25 @@ public enum Try<T> {
   }
 }
 
-extension Try: Printable {
+extension Try: Printable, DebugPrintable {
   public var description: String {
+    return describeWith(print)
+  }
+
+  public var debugDescription: String {
+    return describeWith(debugPrint)
+  }
+
+  private func describeWith(printFn: (Any, inout String) -> Void) -> String {
     switch self {
     case Success(let val):
-      return "Success(\(val()))"
+      var str = ""
+      print("Success(", &str)
+      printFn(val(), &str)
+      print(")", &str)
+      return str
     case Failure(let desc):
-      return "Failure(\(desc))"
+      return "Failure(\"\(desc)\")"
     }
   }
 }
