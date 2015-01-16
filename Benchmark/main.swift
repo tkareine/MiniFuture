@@ -3,7 +3,7 @@ import CoreFoundation
 let NumberOfIterations = 100
 let NumberOfFutureCompositions = 2000
 
-func stressTestFutures() {
+func benchmarkFutures() {
   var fut = Future.succeeded(0)
 
   for i in 0..<NumberOfFutureCompositions {
@@ -81,5 +81,5 @@ func formatMeasurement(label: String, withData m: Measurement) -> String {
 
 println("iterations: \(NumberOfIterations), futures composed: \(NumberOfFutureCompositions)\n")
 
-println(formatMeasurement("warm up", withData: measure(stressTestFutures)))
-println(formatMeasurement("measure", withData: measure(stressTestFutures)))
+println(formatMeasurement("warm up", withData: measure(benchmarkFutures)))
+println(formatMeasurement("measure", withData: measure(benchmarkFutures)))

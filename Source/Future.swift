@@ -5,7 +5,7 @@ struct FutureExecution {
 
   typealias Group = dispatch_group_t
 
-  static func newGroup() -> Group {
+  static func makeGroup() -> Group {
     return dispatch_group_create()
   }
 
@@ -110,7 +110,7 @@ public class ImmediateFuture<T>: Future<T> {
 }
 
 public class AsyncFuture<T>: Future<T> {
-  private let Group = FutureExecution.newGroup()
+  private let Group = FutureExecution.makeGroup()
 
   override private var futureName: String {
     return "AsyncFuture"
