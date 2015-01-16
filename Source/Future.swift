@@ -158,7 +158,8 @@ public class PromiseFuture<T>: Future<T> {
   public func complete(value: Try<T>) {
     let callbacks: [CompletionCallback] = condition.synchronized { _ in
       if self.result != nil {
-        fatalError("PromiseFuture is already completed, don't complete me more than once")
+        fatalError("Tried to complete PromiseFuture with \(value.value), but " +
+          "the future is already completed with \(self.result!.value)")
       }
 
       self.result = value
