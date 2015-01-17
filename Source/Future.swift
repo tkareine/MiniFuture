@@ -1,7 +1,7 @@
 import Dispatch
 
 struct FutureExecution {
-  private static var sharedQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+  private static let sharedQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
   typealias Group = dispatch_group_t
 

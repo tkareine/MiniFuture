@@ -1,8 +1,8 @@
 import Dispatch  // for pthread
 
 class Condition {
-  private var mutex: UnsafeMutablePointer<pthread_mutex_t>
-  private var condition: UnsafeMutablePointer<pthread_cond_t>
+  private let mutex: UnsafeMutablePointer<pthread_mutex_t>
+  private let condition: UnsafeMutablePointer<pthread_cond_t>
 
   typealias WaitCallback = () -> Void
 

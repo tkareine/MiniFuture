@@ -1,7 +1,7 @@
 import Dispatch
 
 public class Semaphore {
-  private var sem: dispatch_semaphore_t
+  private let sem: dispatch_semaphore_t
 
   public init(count: Int = 0) {
     sem = dispatch_semaphore_create(count)
