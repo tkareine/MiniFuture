@@ -21,7 +21,7 @@ struct FutureExecution {
     dispatch_group_notify(group, sharedQueue, block)
   }
 
-  static func wait(group: Group) -> Void {
+  static func wait(group: Group) {
     dispatch_group_wait(group, DISPATCH_TIME_FOREVER)
   }
 }
