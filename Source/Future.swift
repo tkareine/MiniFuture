@@ -78,7 +78,8 @@ public class Future<T> {
       case .Success(let val):
         f(val()).onComplete(promise.complete)
       case .Failure(let desc):
-        // we cannot cast dynamically with generic types, so let's create new value
+        // we cannot cast dynamically with generic types, so let's create a
+        // new value
         promise.complete(.Failure(desc))
       }
     }

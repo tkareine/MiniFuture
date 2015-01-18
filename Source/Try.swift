@@ -1,7 +1,8 @@
 import Foundation
 
 public enum Try<T> {
-  // replace `@autoclosure () -> T` with just `T` when Swift supports generic associated values
+  /// TODO: Replace `@autoclosure () -> T` in Success with just `T` when
+  /// Swift supports generic associated values.
   case Success(@autoclosure () -> T)
   case Failure(String)
 
@@ -73,8 +74,9 @@ extension Try: Printable, DebugPrintable {
   }
 }
 
-/* Try enumeration does not adopt Equatable protocol, because that would limit
- * the allowed values of generic type T. Instead, we provide these helpers:
+/**
+ * Try enumeration does not adopt Equatable protocol, because that would limit
+ * the allowed values of generic type T. Instead, we provide `==` operator.
  */
 func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   switch (lhs, rhs) {
