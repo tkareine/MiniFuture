@@ -59,7 +59,7 @@ class FutureTests: XCTestCase {
     let sem = Semaphore()
     let fut = Future<Int>.promise()
 
-    FutureExecution.dispatchAsync {
+    FutureExecution.async {
       sem.wait()
       fut.resolve(1)
     }
@@ -132,7 +132,7 @@ class FutureTests: XCTestCase {
       res = r
     }
 
-    FutureExecution.dispatchAsync {
+    FutureExecution.async {
       fut.resolve(1)
     }
 

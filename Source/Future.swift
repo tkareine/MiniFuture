@@ -9,19 +9,19 @@ struct FutureExecution {
     return dispatch_group_create()
   }
 
-  static func dispatchAsync(block: () -> Void) {
+  static func async(block: () -> Void) {
     dispatch_async(sharedQueue, block)
   }
 
-  static func dispatchAsync(group: Group, block: () -> Void) {
+  static func async(group: Group, block: () -> Void) {
     dispatch_group_async(group, sharedQueue, block)
   }
 
-  static func dispatchSync(block: () -> Void) {
+  static func sync(block: () -> Void) {
     dispatch_sync(sharedQueue, block)
   }
 
-  static func dispatchNotify(group: Group, block: () -> Void) {
+  static func notify(group: Group, block: () -> Void) {
     dispatch_group_notify(group, sharedQueue, block)
   }
 
@@ -114,7 +114,7 @@ public class ImmediateFuture<T>: Future<T> {
 
   override public func onComplete(block: CompletionCallback) {
     let res = result!
-    FutureExecution.dispatchAsync { block(res) }
+    FutureExecution.async { block(res) }
   }
 }
 
@@ -123,7 +123,7 @@ public class AsyncFuture<T>: Future<T> {
 
   override public var isCompleted: Bool {
     var res = false
-    FutureExecution.dispatchSync {
+    FutureExecution.sync {
       res = self.result != nil
     }
     return res
@@ -135,7 +135,7 @@ public class AsyncFuture<T>: Future<T> {
 
   private init(_ block: () -> Try<T>) {
     super.init(nil)
-    FutureExecution.dispatchAsync(Group) {
+    FutureExecution.async(Group) {
       self.result = block()
     }
   }
@@ -146,7 +146,7 @@ public class AsyncFuture<T>: Future<T> {
   }
 
   override public func onComplete(block: CompletionCallback) {
-    FutureExecution.dispatchNotify(Group) {
+    FutureExecution.notify(Group) {
       block(self.result!)
     }
   }
@@ -196,7 +196,7 @@ public class PromiseFuture<T>: Future<T> {
     }
 
     for block in callbacks {
-      FutureExecution.dispatchAsync { block(value) }
+      FutureExecution.async { block(value) }
     }
   }
 
@@ -222,7 +222,7 @@ public class PromiseFuture<T>: Future<T> {
     }
 
     if let r = res {
-      FutureExecution.dispatchAsync { block(r) }
+      FutureExecution.async { block(r) }
     }
   }
 }

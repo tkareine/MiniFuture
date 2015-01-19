@@ -3,7 +3,7 @@ import XCTest
 class SemaphoreTests: XCTestCase {
   func testWaitWithTimeout() {
     let expectation = expectationWithDescription("wait with timeout")
-    FutureExecution.dispatchAsync {
+    FutureExecution.async {
       Semaphore().wait(timeout: 50)
       expectation.fulfill()
     }
@@ -13,7 +13,7 @@ class SemaphoreTests: XCTestCase {
   func testWaitAndSignal() {
     let sem = Semaphore()
     let expectation = expectationWithDescription("wait and signal")
-    FutureExecution.dispatchAsync {
+    FutureExecution.async {
       sem.wait()
       expectation.fulfill()
     }
