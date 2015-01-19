@@ -17,6 +17,10 @@ struct FutureExecution {
     dispatch_group_async(group, sharedQueue, block)
   }
 
+  static func dispatchSync(block: () -> Void) {
+    dispatch_sync(sharedQueue, block)
+  }
+
   static func dispatchNotify(group: Group, block: () -> Void) {
     dispatch_group_notify(group, sharedQueue, block)
   }
@@ -52,7 +56,7 @@ public class Future<T> {
   private var result: Try<T>?
 
   public var isCompleted: Bool {
-    return result != nil
+    fatalError("must be overridden")
   }
 
   private var futureName: String {
@@ -92,6 +96,10 @@ public class Future<T> {
 }
 
 public class ImmediateFuture<T>: Future<T> {
+  override public var isCompleted: Bool {
+    return result != nil
+  }
+
   override private var futureName: String {
     return "ImmediateFuture"
   }
@@ -112,6 +120,14 @@ public class ImmediateFuture<T>: Future<T> {
 
 public class AsyncFuture<T>: Future<T> {
   private let Group = FutureExecution.makeGroup()
+
+  override public var isCompleted: Bool {
+    var res = false
+    FutureExecution.dispatchSync {
+      res = self.result != nil
+    }
+    return res
+  }
 
   override private var futureName: String {
     return "AsyncFuture"
@@ -139,6 +155,12 @@ public class AsyncFuture<T>: Future<T> {
 public class PromiseFuture<T>: Future<T> {
   private let condition = Condition()
   private var completionCallbacks: [CompletionCallback] = []
+
+  override public var isCompleted: Bool {
+    return condition.synchronized { _ in
+      self.result != nil
+    }
+  }
 
   override private var futureName: String {
     return "PromiseFuture"
