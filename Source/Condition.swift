@@ -26,7 +26,7 @@ class Condition {
     mutex.dealloc(1)
   }
 
-  func synchronized<T>(block: (WaitCallback) -> T) -> T {
+  func synchronized<T>(block: WaitCallback -> T) -> T {
     lock()
     let ret = block(waitCallback)
     unlock()
