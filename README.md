@@ -187,3 +187,8 @@ Total memory consumption of the process stayed below 50 MB.
 
 * Implement Future cancellation and timeouts
 * Implement more composition operations on Futures
+
+## License
+
+ToyFuture is released under the MIT license. See `LICENSE.txt` for
+details.
