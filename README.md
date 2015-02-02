@@ -33,19 +33,23 @@ parameters the Futures pass to the closures.
 ## Usage
 
 To get a Future job running, use `Future.succeeded` and
-`Future.failed` to wrap immediate values. These return a Future that
-is already completed with success or failure value, respectively.
+`Future.failed` to wrap immediate values. These return
+`ImmediateFuture` objects, a Future implementation class already
+completed with success or failure value.
 
 Use `Future.async` for async jobs that compute the value later in a
 queue worker thread. You pass a block to `Future.async` and return
-either a `Success` or `Failure` value from it.
+either a `Success` or `Failure` value from it. The Future
+implementation class here is `AsyncFuture`.
 
 For adapting existing asynchronous interfaces with Futures, use
-`Future.promise`. This is a promise kind of Future. Pass the Future to
-an existing asynchronous interface, and in the completion handler of
-the interface, complete the Future with success (`Future#resolve`) or
-failure (`Future#reject`). You can immediately return the Future to
-code expecting Futures and let the Future complete later.
+`Future.promise`. This returns a `PromiseFuture` object, a promise
+kind of Future implementation class. Pass the Future to an existing
+asynchronous interface, and in the completion handler of the
+interface, complete the Future with success (`Future#resolve`) or
+failure (`Future#reject`). You can immediately return a
+`PromiseFuture` to code expecting Futures and let the `PromiseFuture`
+object complete later.
 
 When you get a handle to a Future, use `Future#flatMap` to compose
 another Future that depends on the completed result of the previous
@@ -151,6 +155,27 @@ $ make example
 Excerpt from today's featured article at Wikipedia:
 
 Oliver Bosbyshell (1839–1921) was Superintendent of the United States …
+```
+
+### Reject `PromiseFuture` with `NSError`
+
+Being a pure Swift implementation, ToyFuture does not depend on
+Foundation classes. This is why a `Failure` value contains just a
+string description of the failure case. The other motivation is that
+strings are simpler to use than `NSError` objects.
+
+You can use extensions to make ToyFuture easier to use with
+`NSError`s. For example, to reject a `PromiseFuture` with an
+`NSError`:
+
+```swift
+import Foundation
+
+extension PromiseFuture {
+  func reject(error: NSError) {
+    reject("\(error.localizedDescription) (\(error.code))")
+  }
+}
 ```
 
 ## Performance
