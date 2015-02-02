@@ -1,5 +1,4 @@
-ToyFuture
-=========
+# ToyFuture
 
 A Future design pattern implementation in Swift, using libdispatch and
 POSIX mutexes and condition variables.
@@ -7,8 +6,7 @@ POSIX mutexes and condition variables.
 For now, this is an experiment, hence the name for the project. *You
 probably shouldn't use this in production.*
 
-Characteristics
----------------
+## Characteristics
 
 We use `Try<T>` value type as a helper. It's an enumeration with two
 members, `Success` and `Failure`. The first is meant for the caller of
@@ -32,8 +30,7 @@ queue. Closures passed to `Future#flatMap`, `Future#onComplete`, and
 synchronization as appropriate when accessing shared state outside the
 parameters the Futures pass to the closures.
 
-Usage
------
+## Usage
 
 To get a Future job running, use `Future.succeeded` and
 `Future.failed` to wrap immediate values. These return a Future that
@@ -156,8 +153,7 @@ Excerpt from today's featured article at Wikipedia:
 Oliver Bosbyshell (1839–1921) was Superintendent of the United States …
 ```
 
-Performance
------------
+## Performance
 
 There's a benchmark in `Benchmark/main.swift`. It builds up complex
 nested Futures (the `futEnd` variable in the code) in a loop
@@ -187,8 +183,7 @@ measure: 220 ms (± 2 ms)
 
 Total memory consumption of the process stayed below 50 MB.
 
-Future work
------------
+## Future work
 
 * Implement Future cancellation and timeouts
 * Implement more composition operations on Futures
