@@ -1,5 +1,25 @@
 import Dispatch
 
+public func async<T>(block: () -> Try<T>) -> AsyncFuture<T> {
+  return Future.async(block)
+}
+
+public func succeeded<T>(val: T) -> ImmediateFuture<T> {
+  return Future.succeeded(val)
+}
+
+public func failed<T>(val: String) -> ImmediateFuture<T> {
+  return Future.failed(val)
+}
+
+public func fromTry<T>(val: Try<T>) -> ImmediateFuture<T> {
+  return Future.fromTry(val)
+}
+
+public func promise<T>() -> PromiseFuture<T> {
+  return Future.promise()
+}
+
 struct FutureExecution {
   private static let sharedQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
@@ -31,19 +51,19 @@ struct FutureExecution {
 }
 
 public class Future<T> {
-  public class func async(block: () -> Try<T>) -> Future<T> {
+  public class func async(block: () -> Try<T>) -> AsyncFuture<T> {
     return AsyncFuture(block)
   }
 
-  public class func succeeded(val: T) -> Future<T> {
+  public class func succeeded(val: T) -> ImmediateFuture<T> {
     return fromTry(.Success(val))
   }
 
-  public class func failed(val: String) -> Future<T> {
+  public class func failed(val: String) -> ImmediateFuture<T> {
     return fromTry(.Failure(val))
   }
 
-  public class func fromTry(val: Try<T>) -> Future<T> {
+  public class func fromTry(val: Try<T>) -> ImmediateFuture<T> {
     return ImmediateFuture(val)
   }
 
