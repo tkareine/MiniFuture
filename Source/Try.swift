@@ -78,7 +78,7 @@ extension Try: Printable, DebugPrintable {
  * Try enumeration does not adopt Equatable protocol, because that would limit
  * the allowed values of generic type T. Instead, we provide `==` operator.
  */
-func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
+public func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   switch (lhs, rhs) {
   case (.Success(let lhsVal), .Success(let rhsVal)):
     return lhsVal() == rhsVal()
@@ -89,6 +89,6 @@ func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   }
 }
 
-func !=<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
+public func !=<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   return !(lhs == rhs)
 }
