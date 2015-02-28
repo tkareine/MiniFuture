@@ -1,10 +1,10 @@
 import Dispatch  // for pthread
 
-class Condition {
+public class Condition {
+  public typealias WaitCallback = () -> Void
+
   private let mutex: UnsafeMutablePointer<pthread_mutex_t>
   private let condition: UnsafeMutablePointer<pthread_cond_t>
-
-  typealias WaitCallback = () -> Void
 
   private lazy var waitCallback: WaitCallback = { [unowned self] in self.wait() }
 
@@ -26,14 +26,14 @@ class Condition {
     mutex.dealloc(1)
   }
 
-  func synchronized<T>(block: WaitCallback -> T) -> T {
+  public func synchronized<T>(block: WaitCallback -> T) -> T {
     lock()
     let ret = block(waitCallback)
     unlock()
     return ret
   }
 
-  func signal() {
+  public func signal() {
     let res = pthread_cond_signal(condition)
     assert(res == 0)
   }
