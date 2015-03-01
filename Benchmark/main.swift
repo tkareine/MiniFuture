@@ -4,7 +4,7 @@ let NumberOfIterations = 100
 let NumberOfFutureCompositions = 2000
 
 func benchmarkFutures() {
-  var fut = Future.succeeded(0)
+  var fut: Future<Int> = Future.succeeded(0)
 
   for i in 0..<NumberOfFutureCompositions {
     let futBegin = Future.async { .Success(i) }
