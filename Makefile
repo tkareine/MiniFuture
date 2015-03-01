@@ -1,9 +1,9 @@
 DSTROOT ?= .
 INSTALL_PATH ?= /build
 
-.PHONY: test-all test-ios test-mac clean example benchmark
+.PHONY: test-all test-ios test-mac clean example benchmark lint-pod
 
-test-all: test-ios test-mac example
+test-all: test-ios test-mac example lint-pod
 
 test-ios:
 	xcodebuild -scheme Test-ios -target Test-ios -destination 'platform=iOS Simulator,name=iPhone 5s,OS=latest' -destination-timeout 10 test
@@ -21,3 +21,6 @@ example:
 benchmark:
 	xcodebuild -scheme Benchmark -target Benchmark install DSTROOT=$(DSTROOT) INSTALL_PATH=$(INSTALL_PATH)
 	./build/Benchmark
+
+lint-pod:
+	pod lib lint --quick
