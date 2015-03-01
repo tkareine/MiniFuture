@@ -1,7 +1,40 @@
 # MiniFuture
 
-A Future design pattern implementation in Swift, using libdispatch and
-POSIX mutexes and condition variables.
+A Future design pattern implementation in Swift language, using
+libdispatch and POSIX mutexes and condition variables.
+
+## Requirements
+
+* For iOS: >= 7.0 (if installing by copying source files manually) or >=
+  8.0 (if installing as embedded framework)
+* For Mac OS X: >= 10.9
+* Xcode 6.1
+
+## Installation
+
+### CocoaPods
+
+[CocoaPods](http://cocoapods.org/) is a centralized dependency manager
+for Cocoa projects. Currently, its prerelease version supports
+libraries written in Swift language, integrating them as embedded
+frameworks to your project. This requires that the minimum deployment
+target of your project is iOS 8.0 or OS X 10.9.
+
+To add MiniFuture to your project, add the following line to your
+`Podfile`:
+
+```ruby
+pod 'MiniFuture'
+```
+
+And run `pod install`.
+
+In your source code, `import MiniFuture` to use the library.
+
+### Manually
+
+Copy all files under `Source` directory to your project. You have to
+figure out how to upgrade the library yourself.
 
 ## Characteristics
 
