@@ -1,0 +1,20 @@
+# In order to release:
+
+# Check that tests pass
+make
+
+# Update version number
+$EDITOR MiniFuture.podspec
+
+# Describe a summary of changes since the last release
+$EDITOR CHANGELOG.md
+
+# Review the changes, commit them, tag the release
+git diff
+git add -p
+git commit -m 'Release <version>'
+git tag <version>
+
+# Push commits and tag, release the pod
+git push --tags origin master
+pod trunk push

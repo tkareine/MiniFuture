@@ -94,8 +94,8 @@ class FutureTests: XCTestCase {
     var res: Try<Int>!
 
     fut.onComplete { r in
-      sem.signal()
       res = r
+      sem.signal()
     }
 
     sem.wait()
@@ -111,8 +111,8 @@ class FutureTests: XCTestCase {
     var res: Try<Int>!
 
     fut.onComplete { r in
-      sem.signal()
       res = r
+      sem.signal()
     }
 
     sem.wait()
@@ -128,8 +128,8 @@ class FutureTests: XCTestCase {
     var res: Try<Int>!
 
     fut.onComplete { r in
-      sem.signal()
       res = r
+      sem.signal()
     }
 
     FutureExecution.async {
