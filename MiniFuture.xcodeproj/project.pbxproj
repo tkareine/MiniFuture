@@ -288,7 +288,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E99CE4D71A2A635D00D52D0E /* Build configuration list for PBXProject "ToyFuture" */;
+			buildConfigurationList = E99CE4D71A2A635D00D52D0E /* Build configuration list for PBXProject "MiniFuture" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -624,7 +624,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E99CE4D71A2A635D00D52D0E /* Build configuration list for PBXProject "ToyFuture" */ = {
+		E99CE4D71A2A635D00D52D0E /* Build configuration list for PBXProject "MiniFuture" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E99CE4EE1A2A635D00D52D0E /* Debug */,

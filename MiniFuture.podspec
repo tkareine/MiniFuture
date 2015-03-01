@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
-  s.name = "ToyFuture"
+  s.name = "MiniFuture"
   s.version = "0.1.0"
   s.license = {:type => "MIT", :file => "LICENSE.txt"}
   s.summary = "A Future design pattern implementation in Swift"
-  s.homepage = "https://github.com/tkareine/ToyFuture"
+  s.homepage = "https://github.com/tkareine/MiniFuture"
   s.social_media_url = "http://twitter.com/tkareine"
-  s.source = {:git => "https://github.com/tkareine/ToyFuture.git", :tag => s.version}
+  s.source = {:git => "https://github.com/tkareine/MiniFuture.git", :tag => s.version}
   s.authors = {"Tuomas Kareinen" => "tkareine@gmail.com"}
 
   s.ios.deployment_target = "8.0"

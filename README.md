@@ -1,10 +1,7 @@
-# ToyFuture
+# MiniFuture
 
 A Future design pattern implementation in Swift, using libdispatch and
 POSIX mutexes and condition variables.
-
-For now, this is an experiment, hence the name for the project. *You
-probably shouldn't use this in production.*
 
 ## Characteristics
 
@@ -22,7 +19,7 @@ object of the current Future.
 We use explicit success and failure values, because you can't use
 exceptions in Swift. The idea is inspired from Scala 2.10, where the
 Future library wraps exceptions thrown inside Future computations to
-`Failure` values. In ToyFuture, you must do this yourself.
+`Failure` values. In MiniFuture, you must do this yourself.
 
 All async operations run in libdispatch's default global concurrent
 queue. Closures passed to `Future#flatMap`, `Future#onComplete`, and
@@ -159,12 +156,12 @@ Oliver Bosbyshell (1839–1921) was Superintendent of the United States …
 
 ### Reject `PromiseFuture` with `NSError`
 
-Being a pure Swift implementation, ToyFuture does not depend on
+Being a pure Swift implementation, MiniFuture does not depend on
 Foundation classes. This is why a `Failure` value contains just a
 string description of the failure case. The other motivation is that
 strings are simpler to use than `NSError` objects.
 
-You can use extensions to make ToyFuture easier to use with
+You can use extensions to make MiniFuture easier to use with
 `NSError`s. For example, to reject a `PromiseFuture` with an
 `NSError`:
 
@@ -215,5 +212,5 @@ Total memory consumption of the process stayed below 50 MB.
 
 ## License
 
-ToyFuture is released under the MIT license. See `LICENSE.txt` for
+MiniFuture is released under the MIT license. See `LICENSE.txt` for
 details.

@@ -7,17 +7,17 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "NO"
+            buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E99CE4F91A2A63B700D52D0E"
-               BuildableName = "Example"
-               BlueprintName = "Example"
-               ReferencedContainer = "container:ToyFuture.xcodeproj">
+               BlueprintIdentifier = "E99CE4E61A2A635D00D52D0E"
+               BuildableName = "Test-mac.xctest"
+               BlueprintName = "Test-mac"
+               ReferencedContainer = "container:MiniFuture.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,6 +28,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E99CE4E61A2A635D00D52D0E"
+               BuildableName = "Test-mac.xctest"
+               BlueprintName = "Test-mac"
+               ReferencedContainer = "container:MiniFuture.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
@@ -35,7 +45,7 @@
             BlueprintIdentifier = "E99CE4F91A2A63B700D52D0E"
             BuildableName = "Example"
             BlueprintName = "Example"
-            ReferencedContainer = "container:ToyFuture.xcodeproj">
+            ReferencedContainer = "container:MiniFuture.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -48,15 +58,15 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable>
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E99CE4F91A2A63B700D52D0E"
-            BuildableName = "Example"
-            BlueprintName = "Example"
-            ReferencedContainer = "container:ToyFuture.xcodeproj">
+            BlueprintIdentifier = "E99CE4E61A2A635D00D52D0E"
+            BuildableName = "Test-mac.xctest"
+            BlueprintName = "Test-mac"
+            ReferencedContainer = "container:MiniFuture.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -66,15 +76,15 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Debug"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E99CE4F91A2A63B700D52D0E"
-            BuildableName = "Example"
-            BlueprintName = "Example"
-            ReferencedContainer = "container:ToyFuture.xcodeproj">
+            BlueprintIdentifier = "E99CE4E61A2A635D00D52D0E"
+            BuildableName = "Test-mac.xctest"
+            BlueprintName = "Test-mac"
+            ReferencedContainer = "container:MiniFuture.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
