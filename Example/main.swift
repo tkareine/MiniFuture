@@ -105,7 +105,8 @@ func innerAndOuterChainingAsyncFuturesExample() {
 }
 
 func realisticFutureExample() {
-  /* Request a web resource asynchronously, immediately returning a handle to
+  /**
+   * Request a web resource asynchronously, immediately returning a handle to
    * the job as a promise kind of Future. When NSURLSession calls the completion
    * handler, we fullfill the promise. If the completion handler gets called
    * with the contents of the web resource, we resolve the promise with the
@@ -126,14 +127,15 @@ func realisticFutureExample() {
     return promise
   }
 
-  /* Parse data as HTML document, finding specific contents from it with an
+  /**
+   * Parse data as HTML document, finding specific contents from it with an
    * XPath query. We return a completed Future as the handle to the result. If
    * we can parse the data as an HTML document and the query succeeds, we return
    * a successful Future with the query result. Otherwise, we return failed
    * Future describing the error.
    *
    * Because this function gets called inside `Future#flatMap`, it's run in
-   * backround in a queue worker thread.
+   * background in a queue worker thread.
    */
   func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
     var err: NSError?
@@ -159,7 +161,7 @@ func realisticFutureExample() {
   let result = loadURL(wikipediaURL)
     /* Future composition (chaining): when this Future completes successfully,
      * pass its result to a function that does more work, returning another
-     * Future. If this Future completes with a failure, the chain short-circuits
+     * Future. If this Future completes with failure, the chain short-circuits
      * and further flatMap methods are not called. Calls to flatMap are always
      * executed in a queue worker thread.
      */
