@@ -241,11 +241,11 @@ $ make benchmark
 ./build/Benchmark
 iterations: 100, futures composed: 2000
 
-warm up: 220 ms (± 3 ms)
-measure: 220 ms (± 2 ms)
+warm up: 53 ms (± 2 ms)
+measure: 53 ms (± 2 ms)
 ```
 
-Total memory consumption of the process stayed below 50 MB.
+Total memory consumption of the process stayed below 40 MB.
 
 ## Future work
 
