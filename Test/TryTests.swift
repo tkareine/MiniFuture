@@ -2,7 +2,7 @@ import XCTest
 
 class TryTests: XCTestCase {
   func testSuccess() {
-    let t = Try.Success(["a", "b"])
+    let t = Try.success(["a", "b"])
 
     XCTAssert(t.value! == ["a", "b"])
     XCTAssertTrue(t.isSuccess)
@@ -12,7 +12,7 @@ class TryTests: XCTestCase {
   }
 
   func testFailure() {
-    let t = Try<Int>.Failure("2")
+    let t = Try<Int>.failure("2")
 
     XCTAssert(t.value == nil)
     XCTAssertEqual(t.failureDescription!, "2")
@@ -23,9 +23,9 @@ class TryTests: XCTestCase {
   }
 
   func testFlatMap() {
-    let t0 = Try.Success(1).flatMap { e in .Success([e, 2]) }
-    let t1: Try<[Int]> = t0.flatMap { e in .Failure(toString(e + [3])) }
-    let t2 = t1.flatMap { e in .Success(e + [4]) }
+    let t0 = Try.success(1).flatMap { e in .success([e, 2]) }
+    let t1: Try<[Int]> = t0.flatMap { e in .failure(toString(e + [3])) }
+    let t2 = t1.flatMap { e in .success(e + [4]) }
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
     XCTAssertEqual(t1.description, "Failure(\"[1, 2, 3]\")")
@@ -33,8 +33,8 @@ class TryTests: XCTestCase {
   }
 
   func testMap() {
-    let t0 = Try.Success(1).map { e in [e, 2] }
-    let t1: Try<[Int]> = t0.flatMap { e in .Failure(toString(e + [3])) }
+    let t0 = Try.success(1).map { e in [e, 2] }
+    let t1: Try<[Int]> = t0.flatMap { e in .failure(toString(e + [3])) }
     let t2 = t1.map { e in e + [4] }
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
@@ -43,38 +43,38 @@ class TryTests: XCTestCase {
   }
 
   func testEquality() {
-    XCTAssert(Try.Success(1) == Try.Success(1))
-    XCTAssert(Try.Success(1) != Try.Success(2))
-    XCTAssert(Try<Int>.Failure("lol") == Try<Int>.Failure("lol"))
-    XCTAssert(Try<Int>.Failure("lol") != Try<Int>.Failure("bal"))
-    XCTAssert(.Success(1) != Try<Int>.Failure("lol"))
-    XCTAssert(Try<Int>.Failure("lol") != .Success(1))
+    XCTAssert(Try.success(1) == Try.success(1))
+    XCTAssert(Try.success(1) != Try.success(2))
+    XCTAssert(Try<Int>.failure("lol") == Try<Int>.failure("lol"))
+    XCTAssert(Try<Int>.failure("lol") != Try<Int>.failure("bal"))
+    XCTAssert(.success(1) != Try<Int>.failure("lol"))
+    XCTAssert(Try<Int>.failure("lol") != .success(1))
   }
 
   func testLeftIdentityMonadLaw() {
     func newSuccess<T>(x: T) -> Try<T> {
-      return .Success(x)
+      return .success(x)
     }
 
-    let lhs = Try.Success(1).flatMap(newSuccess)
+    let lhs = Try.success(1).flatMap(newSuccess)
     let rhs = newSuccess(1)
 
     XCTAssert(lhs == rhs)
   }
 
   func testRightIdentityMonadLaw() {
-    let lhs = Try.Success(1)
-    let rhs = Try.Success(1).flatMap { e in .Success(e) }
+    let lhs = Try.success(1)
+    let rhs = Try.success(1).flatMap { e in .success(e) }
 
     XCTAssert(lhs == rhs)
   }
 
   func testAssociativityMonadLaw() {
     func makeSuccessIncrementedBy(by: Int)(val: Int) -> Try<Int> {
-      return .Success(by + val)
+      return .success(by + val)
     }
 
-    let t = Try.Success(1)
+    let t = Try.success(1)
     let f = makeSuccessIncrementedBy(1)
     let g = makeSuccessIncrementedBy(2)
 

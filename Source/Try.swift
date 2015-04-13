@@ -1,28 +1,34 @@
 import Foundation
 
 public enum Try<T> {
-  /// TODO: Replace `@autoclosure () -> T` in Success with just `T` when
-  /// Swift supports generic associated values.
-  case Success(@autoclosure () -> T)
+  case Success(Box<T>)
   case Failure(String)
+
+  public static func success(value: T) -> Try<T> {
+    return .Success(Box(value))
+  }
+
+  public static func failure(desc: String) -> Try<T> {
+    return .Failure(desc)
+  }
 
   public func flatMap<U>(f: T -> Try<U>) -> Try<U> {
     switch self {
-    case Success(let val):
-      return f(val())
+    case Success(let box):
+      return f(box.value)
     case Failure(let desc):
-      return .Failure(desc)
+      return .failure(desc)
     }
   }
 
   public func map<U>(f: T -> U) -> Try<U> {
-    return flatMap { e in .Success(f(e)) }
+    return flatMap { e in .success(f(e)) }
   }
 
   public var value: T? {
     switch self {
-    case Success(let val):
-      return val()
+    case Success(let box):
+      return box.value
     case Failure:
       return nil
     }
@@ -62,10 +68,10 @@ extension Try: Printable, DebugPrintable {
 
   private func describeWith(printFn: (Any, inout String) -> Void) -> String {
     switch self {
-    case Success(let val):
+    case Success(let box):
       var str = ""
       print("Success(", &str)
-      printFn(val(), &str)
+      printFn(box.value, &str)
       print(")", &str)
       return str
     case Failure(let desc):
@@ -80,10 +86,10 @@ extension Try: Printable, DebugPrintable {
  */
 public func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   switch (lhs, rhs) {
-  case (.Success(let lhsVal), .Success(let rhsVal)):
-    return lhsVal() == rhsVal()
-  case (.Failure(let lhsDesc), .Failure(let rhsDesc)):
-    return lhsDesc == rhsDesc
+  case (.Success(let lhs), .Success(let rhs)):
+    return lhs.value == rhs.value
+  case (.Failure(let lhs), .Failure(let rhs)):
+    return lhs == rhs
   default:
     return false
   }

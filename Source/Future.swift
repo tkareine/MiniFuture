@@ -36,11 +36,11 @@ public class Future<T> {
   }
 
   public class func succeeded(val: T) -> ImmediateFuture<T> {
-    return fromTry(.Success(val))
+    return fromTry(.success(val))
   }
 
   public class func failed(val: String) -> ImmediateFuture<T> {
-    return fromTry(.Failure(val))
+    return fromTry(.failure(val))
   }
 
   public class func fromTry(val: Try<T>) -> ImmediateFuture<T> {
@@ -79,12 +79,12 @@ public class Future<T> {
     let promise = PromiseFuture<U>()
     onComplete { res in
       switch res {
-      case .Success(let val):
-        f(val()).onComplete(promise.complete)
+      case .Success(let box):
+        f(box.value).onComplete(promise.complete)
       case .Failure(let desc):
         // we cannot cast dynamically with generic types, so let's create a
         // new value
-        promise.complete(.Failure(desc))
+        promise.complete(.failure(desc))
       }
     }
     return promise
@@ -171,11 +171,11 @@ public class PromiseFuture<T>: Future<T> {
   }
 
   public func resolve(value: T) {
-    complete(.Success(value))
+    complete(.success(value))
   }
 
   public func reject(description: String) {
-    complete(.Failure(description))
+    complete(.failure(description))
   }
 
   public func complete(value: Try<T>) {

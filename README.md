@@ -15,7 +15,7 @@ below.
 * For iOS: >= 7.0 (if installing by copying source files manually) or >=
   8.0 (if installing as embedded framework)
 * For Mac OS X: >= 10.9
-* Xcode 6.1
+* Xcode 6.3
 
 ## Installation
 
@@ -102,7 +102,7 @@ side-effects to be run when the Future completes.
 ```swift
 extension String {
   func excerpt(maxLength: Int) -> String {
-    let length = countElements(self)
+    let length = count(self)
 
     if length <= maxLength {
       return self
@@ -148,12 +148,10 @@ func loadURL(url: NSURL) -> Future<NSData> {
 func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
   var err: NSError?
 
-  if let doc = HTMLDocument.readDataAsUTF8(data, error: &err) {
-    if let node = doc.rootHTMLNode(&err) {
-      if let found = node.nodeForXPath(xpath, error: &err) {
-        return Future.succeeded(found)
-      }
-    }
+  if let doc = HTMLDocument.readDataAsUTF8(data, error: &err),
+         node = doc.rootHTMLNode(&err),
+         found = node.nodeForXPath(xpath, error: &err) {
+    return Future.succeeded(found)
   }
 
   if let e = err {
@@ -179,8 +177,8 @@ let result = loadURL(wikipediaURL)
   .get()
 
 switch result {
-case .Success(let result):
-  let excerpt = result().textContents!.excerpt(72)
+case .Success(let box):
+  let excerpt = box.value.textContents!.excerpt(72)
   println("Excerpt from today's featured article at Wikipedia: \(excerpt)")
 case .Failure(let desc):
   println("Error getting today's featured article from Wikipedia: \(desc)")

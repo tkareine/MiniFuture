@@ -6,7 +6,7 @@ func assertToString<T>(actual: T, expected: String) {
 
 extension String {
   func excerpt(maxLength: Int) -> String {
-    let length = countElements(self)
+    let length = count(self)
 
     if length <= maxLength {
       return self
@@ -32,13 +32,13 @@ func immediateFuturesExample() {
 func asyncFuturesExample() {
   let succeeding = Future<Int>.async {
     NSThread.sleepForTimeInterval(0.2)
-    return .Success(1)
+    return .success(1)
   }
   assertToString(succeeding.get(), "Success(1)")
 
   let failing = Future<Int>.async {
     NSThread.sleepForTimeInterval(0.2)
-    return .Failure("deliberate")
+    return .failure("deliberate")
   }
   assertToString(failing.get(), "Failure(\"deliberate\")")
 }
@@ -60,7 +60,7 @@ func promiseFuturesExample() {
 }
 
 func outerChainingFuturesExample() {
-  let fut0: Future<Int> = Future.async { .Success(0) }
+  let fut0: Future<Int> = Future.async { .success(0) }
   let fut1: Future<[Int]> = fut0.flatMap { Future.succeeded([$0, 1]) }
   let fut2: Future<[Int]> = fut1.flatMap { e in Future.failed(toString(e + [2])) }
   let fut3: Future<[Int]> = fut2.flatMap { Future.succeeded($0 + [3]) }
@@ -74,7 +74,7 @@ func outerChainingFuturesExample() {
 func innerChainingFuturesExample() {
   let fut: Future<[Int]> = Future.succeeded([0]).flatMap { e in
     Future.succeeded(e + [1]).flatMap { e in
-      let f: Future<[Int]> = Future.async { .Failure(toString(e + [2])) }
+      let f: Future<[Int]> = Future.async { .failure(toString(e + [2])) }
       return f.flatMap { Future.succeeded($0 + [3]) }
     }
   }
@@ -83,10 +83,10 @@ func innerChainingFuturesExample() {
 }
 
 func innerAndOuterChainingAsyncFuturesExample() {
-  let futBegin = Future.async { .Success(0) }
+  let futBegin = Future.async { .success(0) }
   let futEnd: Future<[Int]> = futBegin.flatMap { e0 in
     let futIn0 = Future.succeeded(10).flatMap { e1 in
-      Future.async { .Success([e1] + [11]) }
+      Future.async { .success([e1] + [11]) }
     }
 
     let futIn1 = Future.succeeded([20]).flatMap {
@@ -140,12 +140,10 @@ func realisticFutureExample() {
   func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
     var err: NSError?
 
-    if let doc = HTMLDocument.readDataAsUTF8(data, error: &err) {
-      if let node = doc.rootHTMLNode(&err) {
-        if let found = node.nodeForXPath(xpath, error: &err) {
-          return Future.succeeded(found)
-        }
-      }
+    if let doc = HTMLDocument.readDataAsUTF8(data, error: &err),
+           node = doc.rootHTMLNode(&err),
+           found = node.nodeForXPath(xpath, error: &err) {
+      return Future.succeeded(found)
     }
 
     if let e = err {
@@ -171,8 +169,8 @@ func realisticFutureExample() {
     .get()
 
   switch result {
-  case .Success(let result):
-    let excerpt = result().textContents!.excerpt(72)
+  case .Success(let box):
+    let excerpt = box.value.textContents!.excerpt(72)
     println("Excerpt from today's featured article at Wikipedia: \(excerpt)")
   case .Failure(let desc):
     println("Error getting today's featured article from Wikipedia: \(desc)")
