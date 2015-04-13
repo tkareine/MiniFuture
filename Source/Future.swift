@@ -236,7 +236,7 @@ extension Future: Printable, DebugPrintable {
     return describeWith(debugPrint)
   }
 
-  private func describeWith(printFn: (Any, inout String) -> Void) -> String {
+  private func describeWith(@noescape printFn: (Any, inout String) -> Void) -> String {
     var str = "\(futureName)("
     printFn(result, &str)
     print(")", &str)

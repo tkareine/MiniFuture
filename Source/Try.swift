@@ -12,7 +12,7 @@ public enum Try<T> {
     return .Failure(desc)
   }
 
-  public func flatMap<U>(f: T -> Try<U>) -> Try<U> {
+  public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
     switch self {
     case Success(let box):
       return f(box.value)
@@ -21,7 +21,7 @@ public enum Try<T> {
     }
   }
 
-  public func map<U>(f: T -> U) -> Try<U> {
+  public func map<U>(@noescape f: T -> U) -> Try<U> {
     return flatMap { e in .success(f(e)) }
   }
 
@@ -66,7 +66,7 @@ extension Try: Printable, DebugPrintable {
     return describeWith(debugPrint)
   }
 
-  private func describeWith(printFn: (Any, inout String) -> Void) -> String {
+  private func describeWith(@noescape printFn: (Any, inout String) -> Void) -> String {
     switch self {
     case Success(let box):
       var str = ""
