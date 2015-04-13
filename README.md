@@ -191,9 +191,7 @@ $ make example
 # xcodebuild output...
 
 ./build/Example
-Excerpt from today's featured article at Wikipedia:
-
-Oliver Bosbyshell (1839–1921) was Superintendent of the United States …
+Excerpt from today's featured article at Wikipedia: Casino Royale (1953) is a James Bond novel, the first of twelve featurin…
 ```
 
 ### Reject `PromiseFuture` with `NSError`
