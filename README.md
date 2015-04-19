@@ -188,7 +188,7 @@ See more in `Example/main.swift`. You can run the examples:
 
 ```
 $ make example
-# xcodebuild output...
+# xcodebuild output…
 
 ./build/Example
 Excerpt from today's featured article at Wikipedia: Casino Royale (1953) is a James Bond novel, the first of twelve featurin…
@@ -236,7 +236,7 @@ MHz DDR3:
 
 ```
 $ make benchmark
-# xcodebuild output...
+# xcodebuild output…
 
 ./build/Benchmark
 iterations: 500, futures composed: 2000
