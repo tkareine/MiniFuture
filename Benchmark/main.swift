@@ -1,6 +1,6 @@
 import CoreFoundation
 
-let NumberOfIterations = 100
+let NumberOfIterations = 500
 let NumberOfFutureCompositions = 2000
 
 func benchmarkFutures() {
