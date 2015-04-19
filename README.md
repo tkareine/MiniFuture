@@ -224,7 +224,7 @@ times (`NumberOfFutureCompositions`) and chains them into one big
 composite Future (the `fut` variable). Then the benchmark waits for
 the Future to complete.
 
-We repeat this 100 times (`NumberOfIterations`) to get the arithmetic
+We repeat this 500 times (`NumberOfIterations`) to get the arithmetic
 mean and standard deviation of time spent completing each composite
 Future.
 
