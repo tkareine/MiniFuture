@@ -10,6 +10,8 @@ library in production, and it appears to work as expected. There's a
 benchmark that acts as a stress test, see [Performance](#performance)
 below.
 
+[![Pod version](https://badge.fury.io/co/MiniFuture.svg)](http://badge.fury.io/co/MiniFuture)
+
 ## Requirements
 
 * For iOS: >= 7.0 (if installing by copying source files manually) or >=
