@@ -481,6 +481,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 				WARNING_CFLAGS = (
 					"-Wextra",
 					"-Wall",
@@ -521,6 +522,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 				WARNING_CFLAGS = (
 					"-Wextra",
 					"-Wall",

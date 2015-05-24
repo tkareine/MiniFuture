@@ -1,6 +1,6 @@
 import Dispatch  // for pthread
 
-public class Condition {
+public final class Condition {
   public typealias WaitCallback = () -> Void
 
   private let mutex: UnsafeMutablePointer<pthread_mutex_t>

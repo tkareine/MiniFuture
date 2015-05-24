@@ -1,6 +1,6 @@
 import Dispatch
 
-public class Semaphore {
+public final class Semaphore {
   public typealias TimeoutInMS = dispatch_time_t
 
   private let sem: dispatch_semaphore_t
