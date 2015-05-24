@@ -21,6 +21,8 @@ example:
 benchmark:
 	xcodebuild -scheme Benchmark -target Benchmark install DSTROOT=$(DSTROOT) INSTALL_PATH=$(INSTALL_PATH)
 	./build/Benchmark
+	@echo
+	@swiftc --version
 
 lint-pod:
 	pod lib lint --quick
