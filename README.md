@@ -14,10 +14,10 @@ below.
 
 ## Requirements
 
-* For iOS: >= 7.0 (if installing by copying source files manually) or >=
-  8.0 (if installing as embedded framework)
-* For Mac OS X: >= 10.9
-* Xcode 6.3
+* iOS >= 7.0 (if installing by copying source files manually) or
+  iOS >= 8.0 (if installing as embedded framework)
+* Mac OS X >= 10.9
+* Xcode >= 6.3 (Swift 1.2)
 
 ## Installation
 
