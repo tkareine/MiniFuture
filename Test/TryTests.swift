@@ -2,9 +2,9 @@ import XCTest
 
 class TryTests: XCTestCase {
   func testSuccess() {
-    let t = Try.success(["a", "b"])
+    let t = Try.Success(["a", "b"])
 
-    XCTAssert(t.value! == ["a", "b"])
+    XCTAssert(try! t.value() == ["a", "b"])
     XCTAssertTrue(t.isSuccess)
     XCTAssertFalse(t.isFailure)
     XCTAssertEqual(t.description, "Success([\"a\", \"b\"])")
@@ -12,43 +12,51 @@ class TryTests: XCTestCase {
   }
 
   func testFailure() {
-    let t = Try<Int>.failure("2")
+    let t = Try<Int>.Failure(Error.Deliberate("42"))
 
-    XCTAssert(t.value == nil)
-    XCTAssertEqual(t.failureDescription!, "2")
+    do {
+      try t.value()
+      XCTFail("should have thrown")
+    } catch Error.Deliberate(let err) {
+      XCTAssert(err == "42")
+    } catch {
+      XCTFail("should have been catched")
+    }
+
     XCTAssertFalse(t.isSuccess)
     XCTAssertTrue(t.isFailure)
-    XCTAssertEqual(t.description, "Failure(\"2\")")
-    XCTAssertEqual(t.debugDescription, "Failure(\"2\")")
+    XCTAssertEqual(t.description, "Failure(Deliberate(\"42\"))")
+    XCTAssertEqual(t.debugDescription, "Failure(Deliberate(\"42\"))")
   }
 
   func testFlatMap() {
-    let t0 = Try.success(1).flatMap { e in .success([e, 2]) }
-    let t1: Try<[Int]> = t0.flatMap { e in .failure(String(e + [3])) }
-    let t2 = t1.flatMap { e in .success(e + [4]) }
+    let t0 = Try.Success(1).flatMap { e in .Success([e, 2]) }
+    let t1: Try<[Int]> = t0.flatMap { e in .Failure(Error.Deliberate(String(e + [3]))) }
+    let t2 = t1.flatMap { e in .Success(e + [4]) }
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
-    XCTAssertEqual(t1.description, "Failure(\"[1, 2, 3]\")")
-    XCTAssertEqual(t2.description, "Failure(\"[1, 2, 3]\")")
+    XCTAssertEqual(t1.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
+    XCTAssertEqual(t2.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
   }
 
   func testMap() {
-    let t0 = Try.success(1).map { e in [e, 2] }
-    let t1: Try<[Int]> = t0.flatMap { e in .failure(String(e + [3])) }
+    let t0 = Try.Success(1).map { e in [e, 2] }
+    let t1: Try<[Int]> = t0.flatMap { e in .Failure(Error.Deliberate(String(e + [3]))) }
     let t2 = t1.map { e in e + [4] }
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
-    XCTAssertEqual(t1.description, "Failure(\"[1, 2, 3]\")")
-    XCTAssertEqual(t2.description, "Failure(\"[1, 2, 3]\")")
+    XCTAssertEqual(t1.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
+    XCTAssertEqual(t2.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
   }
 
   func testEquality() {
-    XCTAssert(Try.success(1) == Try.success(1))
-    XCTAssert(Try.success(1) != Try.success(2))
-    XCTAssert(Try<Int>.failure("lol") == Try<Int>.failure("lol"))
-    XCTAssert(Try<Int>.failure("lol") != Try<Int>.failure("bal"))
-    XCTAssert(.success(1) != Try<Int>.failure("lol"))
-    XCTAssert(Try<Int>.failure("lol") != .success(1))
+    XCTAssert(Try.Success(1) == Try.Success(1))
+    XCTAssert(Try.Success(1) != Try.Success(2))
+    XCTAssert(Try<Int>.Failure(Error.Deliberate("lol")) == Try<Int>.Failure(Error.Deliberate("lol")))
+    XCTAssert(Try<Int>.Failure(Error.Deliberate("lol")) == Try<Int>.Failure(Error.Deliberate("bal")))
+    XCTAssert(Try<Int>.Failure(Error.Deliberate("lol")) != Try<Int>.Failure(Error.Unsupported))
+    XCTAssert(Try.Success(1) != Try<Int>.Failure(Error.Deliberate("1")))
+    XCTAssert(Try<Int>.Failure(Error.Deliberate("1")) != Try.Success(1))
   }
 
   func testLeftIdentityMonadLaw() {
@@ -63,18 +71,18 @@ class TryTests: XCTestCase {
   }
 
   func testRightIdentityMonadLaw() {
-    let lhs = Try.success(1)
-    let rhs = Try.success(1).flatMap { e in .success(e) }
+    let lhs = Try.Success(1)
+    let rhs = Try.Success(1).flatMap { e in .Success(e) }
 
     XCTAssert(lhs == rhs)
   }
 
   func testAssociativityMonadLaw() {
     func makeSuccessIncrementedBy(by: Int)(val: Int) -> Try<Int> {
-      return .success(by + val)
+      return .Success(by + val)
     }
 
-    let t = Try.success(1)
+    let t = Try.Success(1)
     let f = makeSuccessIncrementedBy(1)
     let g = makeSuccessIncrementedBy(2)
 

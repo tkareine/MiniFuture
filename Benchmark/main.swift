@@ -7,17 +7,17 @@ func benchmarkFutures() {
   var fut: Future<Int> = Future.succeeded(0)
 
   for i in 0..<NumberOfFutureCompositions {
-    let futBegin = Future.async { .success(i) }
+    let futBegin = Future.async { .Success(i) }
     let futEnd: Future<Int> = futBegin.flatMap { e0 in
       let futIn0: Future<Int> = Future.succeeded(i).flatMap { e1 in
-        Future.async { .success(i) }.flatMap { e2 in
+        Future.async { .Success(i) }.flatMap { e2 in
           Future.succeeded(e1 + e2)
         }
       }
 
-      let futIn1: Future<Int> = Future.async { .success(i) }.flatMap { e1 in
+      let futIn1: Future<Int> = Future.async { .Success(i) }.flatMap { e1 in
         Future.succeeded(i).flatMap { e2 in
-          Future.async { .success(e1 + e2) }
+          Future.async { .Success(e1 + e2) }
         }
       }
 

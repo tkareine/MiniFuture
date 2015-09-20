@@ -33,6 +33,8 @@
 		E99CE50C1A2A6A6B00D52D0E /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5031A2A642600D52D0E /* Future.swift */; };
 		E99CE50D1A2A6A6B00D52D0E /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5041A2A642600D52D0E /* Try.swift */; };
 		E9F433D01A33080800F8F0AC /* Semaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F433CF1A33080800F8F0AC /* Semaphore.swift */; };
+		E9FA3C571BB083DB0070379F /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA3C561BB083DB0070379F /* Error.swift */; settings = {ASSET_TAGS = (); }; };
+		E9FA3C581BB083DB0070379F /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA3C561BB083DB0070379F /* Error.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -81,6 +83,7 @@
 		E99CE5041A2A642600D52D0E /* Try.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Try.swift; sourceTree = "<group>"; };
 		E99CE5071A2A65D400D52D0E /* FutureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTests.swift; sourceTree = "<group>"; };
 		E9F433CF1A33080800F8F0AC /* Semaphore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Semaphore.swift; sourceTree = "<group>"; };
+		E9FA3C561BB083DB0070379F /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +165,7 @@
 		E99CE4EB1A2A635D00D52D0E /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				E9FA3C561BB083DB0070379F /* Error.swift */,
 				E942A48D1A2FA50D00781DC5 /* TryTests.swift */,
 				E91E61FE1A6ABB3400543A40 /* SemaphoreTests.swift */,
 				E99CE5071A2A65D400D52D0E /* FutureTests.swift */,
@@ -336,6 +340,7 @@
 				E921CF021A5F1A240016AF1C /* Condition.swift in Sources */,
 				E921CF031A5F1A240016AF1C /* Semaphore.swift in Sources */,
 				E921CF041A5F1A240016AF1C /* Future.swift in Sources */,
+				E9FA3C571BB083DB0070379F /* Error.swift in Sources */,
 				E921CEFF1A5F1A130016AF1C /* TryTests.swift in Sources */,
 				E91E61FF1A6ABB3400543A40 /* SemaphoreTests.swift in Sources */,
 				E921CF001A5F1A150016AF1C /* FutureTests.swift in Sources */,
@@ -361,6 +366,7 @@
 				E909FD161A30DF46003537CC /* Condition.swift in Sources */,
 				E9F433D01A33080800F8F0AC /* Semaphore.swift in Sources */,
 				E99CE50A1A2A6A5A00D52D0E /* Future.swift in Sources */,
+				E9FA3C581BB083DB0070379F /* Error.swift in Sources */,
 				E942A48E1A2FA50D00781DC5 /* TryTests.swift in Sources */,
 				E91E62001A6ABFA300543A40 /* SemaphoreTests.swift in Sources */,
 				E99CE5081A2A65D400D52D0E /* FutureTests.swift in Sources */,

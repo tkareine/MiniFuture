@@ -16,22 +16,22 @@ class FutureTests: XCTestCase {
   }
 
   func testGetFailingImmediateFuture() {
-    let fut = Future<Int>.failed("1")
+    let fut = Future<Int>.failed(Error.Deliberate("42"))
 
     XCTAssertTrue(fut.isCompleted)  // no need to wait with `get`
 
     fut.get()
 
-    XCTAssertEqual(fut.get().description, "Failure(\"1\")")
-    XCTAssertEqual(fut.description, "ImmediateFuture(Optional(Failure(\"1\")))")
-    XCTAssertEqual(fut.debugDescription, "ImmediateFuture(Optional(Failure(\"1\")))")
+    XCTAssertEqual(fut.get().description, "Failure(Deliberate(\"42\"))")
+    XCTAssertEqual(fut.description, "ImmediateFuture(Optional(Failure(Deliberate(\"42\"))))")
+    XCTAssertEqual(fut.debugDescription, "ImmediateFuture(Optional(Failure(Deliberate(\"42\"))))")
   }
 
   func testGetSucceedingAsyncFuture() {
     let sem = Semaphore()
     let fut = Future<Int>.async {
       sem.wait()
-      return .success(1)
+      return .Success(1)
     }
 
     XCTAssertFalse(fut.isCompleted)
@@ -47,12 +47,12 @@ class FutureTests: XCTestCase {
   }
 
   func testGetFailingAsyncFuture() {
-    let fut = Future<Int>.async { .failure("1") }
+    let fut = Future<Int>.async { .Failure(Error.Deliberate("42")) }
     let res = fut.get()
 
     XCTAssertTrue(fut.isCompleted)
-    XCTAssertEqual(res.description, "Failure(\"1\")")
-    XCTAssertEqual(fut.description, "AsyncFuture(Optional(Failure(\"1\")))")
+    XCTAssertEqual(res.description, "Failure(Deliberate(\"42\"))")
+    XCTAssertEqual(fut.description, "AsyncFuture(Optional(Failure(Deliberate(\"42\"))))")
   }
 
   func testGetSucceedingPromiseFuture() {
@@ -81,11 +81,11 @@ class FutureTests: XCTestCase {
 
     XCTAssertFalse(fut.isCompleted)
 
-    fut.reject("1")
+    fut.reject(Error.Deliberate("42"))
 
     XCTAssertTrue(fut.isCompleted)
-    XCTAssertEqual(fut.get().description, "Failure(\"1\")")
-    XCTAssertEqual(fut.description, "PromiseFuture(Optional(Failure(\"1\")))")
+    XCTAssertEqual(fut.get().description, "Failure(Deliberate(\"42\"))")
+    XCTAssertEqual(fut.description, "PromiseFuture(Optional(Failure(Deliberate(\"42\"))))")
   }
 
   func testOnCompleteImmediateFuture() {
@@ -107,7 +107,7 @@ class FutureTests: XCTestCase {
 
   func testOnCompleteAsyncFuture() {
     let sem = Semaphore()
-    let fut = Future.async { .success(1) }
+    let fut = Future.async { .Success(1) }
     var res: Try<Int>!
 
     fut.onComplete { r in
@@ -154,7 +154,7 @@ class FutureTests: XCTestCase {
     let sem1 = Semaphore()
     let fut1: Future<[Int]> = fut0.flatMap { e in
       sem1.wait()
-      return Future.failed(String(e + [2]))
+      return Future.failed(Error.Deliberate(String(e + [2])))
     }
 
     let fut2: Future<[Int]> = fut1.flatMap(futureFunCausingFatalError)
@@ -175,27 +175,27 @@ class FutureTests: XCTestCase {
 
     XCTAssertTrue(fut1.isCompleted)
     XCTAssertTrue(fut2.isCompleted)
-    XCTAssertEqual(res1.description, "Failure(\"[0, 1, 2]\")")
-    XCTAssertEqual(res2.description, "Failure(\"[0, 1, 2]\")")
+    XCTAssertEqual(res1.description, "Failure(Deliberate(\"[0, 1, 2]\"))")
+    XCTAssertEqual(res2.description, "Failure(Deliberate(\"[0, 1, 2]\"))")
   }
 
   func testOuterFlatMapCompositionStartingWithAsyncFuture() {
     let sem0 = Semaphore()
     let fut0 = Future<Int>.async {
       sem0.wait()
-      return .success(0)
+      return .Success(0)
     }
 
     let sem1 = Semaphore()
     let fut1: Future<[Int]> = fut0.flatMap { e in
       sem1.wait()
-      return Future.async { .success([e, 1]) }
+      return Future.async { .Success([e, 1]) }
     }
 
     let sem2 = Semaphore()
     let fut2: Future<[Int]> = fut1.flatMap { e in
       sem2.wait()
-      return Future.async { .failure(String(e + [2])) }
+      return Future.async { .Failure(Error.Deliberate(String(e + [2]))) }
     }
 
     let fut3: Future<[Int]> = fut2.flatMap(futureFunCausingFatalError)
@@ -226,8 +226,8 @@ class FutureTests: XCTestCase {
 
     XCTAssertTrue(fut2.isCompleted)
     XCTAssertTrue(fut3.isCompleted)
-    XCTAssertEqual(res2.description, "Failure(\"[0, 1, 2]\")")
-    XCTAssertEqual(res3.description, "Failure(\"[0, 1, 2]\")")
+    XCTAssertEqual(res2.description, "Failure(Deliberate(\"[0, 1, 2]\"))")
+    XCTAssertEqual(res3.description, "Failure(Deliberate(\"[0, 1, 2]\"))")
   }
 
   func testInnerFlatMapCompositionStartingWithImmediateFuture() {
@@ -239,7 +239,7 @@ class FutureTests: XCTestCase {
     let futOut: Future<[Int]> = Future.succeeded(0).flatMap { e0 in
       futIn = Future.succeeded([e0, 1]).flatMap { e1 in
         semIn.wait()
-        return Future<[Int]>.failed(String(e1 + [2])).flatMap(futureFunCausingFatalError)
+        return Future<[Int]>.failed(Error.Deliberate(String(e1 + [2]))).flatMap(futureFunCausingFatalError)
       }
       semOut.signal()
       return futIn
@@ -254,12 +254,12 @@ class FutureTests: XCTestCase {
     futIn.get()
 
     XCTAssertTrue(futIn.isCompleted)
-    XCTAssertEqual(futIn.get().description, "Failure(\"[0, 1, 2]\")")
+    XCTAssertEqual(futIn.get().description, "Failure(Deliberate(\"[0, 1, 2]\"))")
 
     futOut.get()
 
     XCTAssertTrue(futOut.isCompleted)
-    XCTAssertEqual(futOut.get().description, "Failure(\"[0, 1, 2]\")")
+    XCTAssertEqual(futOut.get().description, "Failure(Deliberate(\"[0, 1, 2]\"))")
   }
 
   func testInnerFlatMapCompositionStartingWithAsyncFuture() {
@@ -268,14 +268,14 @@ class FutureTests: XCTestCase {
 
     var futIn: Future<[Int]>!
 
-    let futOut: Future<[Int]> = Future.async { .success(0) }.flatMap { e0 in
+    let futOut: Future<[Int]> = Future.async { .Success(0) }.flatMap { e0 in
       let f: Future<[Int]> = Future.async {
         semOut.wait()
-        return .success([e0, 1])
+        return .Success([e0, 1])
       }
 
       futIn = f.flatMap { e1 in
-        let f: Future<[Int]> = Future.async { .failure(String(e1 + [2])) }
+        let f: Future<[Int]> = Future.async { .Failure(Error.Deliberate(String(e1 + [2]))) }
         return f.flatMap(futureFunCausingFatalError)
       }
       semIn.signal()
@@ -291,18 +291,18 @@ class FutureTests: XCTestCase {
     futIn.get()
 
     XCTAssertTrue(futIn.isCompleted)
-    XCTAssertEqual(futIn.get().description, "Failure(\"[0, 1, 2]\")")
+    XCTAssertEqual(futIn.get().description, "Failure(Deliberate(\"[0, 1, 2]\"))")
 
     futOut.get()
 
     XCTAssertTrue(futOut.isCompleted)
-    XCTAssertEqual(futOut.get().description, "Failure(\"[0, 1, 2]\")")
+    XCTAssertEqual(futOut.get().description, "Failure(Deliberate(\"[0, 1, 2]\"))")
   }
 
   func testComplexFlatMapComposition() {
     let futOut: Future<[Int]> = Future.succeeded(0).flatMap { e0 in
       let futIn0 = Future.succeeded([10]).flatMap { e1 in
-        Future.async { .success(e1 + [11]) }
+        Future.async { .Success(e1 + [11]) }
       }
 
       let futIn1 = Future.succeeded([20]).flatMap {
@@ -325,8 +325,8 @@ class FutureTests: XCTestCase {
   }
 
   func testMapCompositionWithFailure() {
-    let fut = Future<Int>.failed("1").map { [$0, 2] }
-    XCTAssertEqual(fut.get().description, "Failure(\"1\")")
+    let fut = Future<Int>.failed(Error.Deliberate("42")).map { [$0, 2] }
+    XCTAssertEqual(fut.get().description, "Failure(Deliberate(\"42\"))")
   }
 }
 

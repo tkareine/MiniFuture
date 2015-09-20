@@ -2,44 +2,35 @@ import Foundation
 
 public enum Try<T> {
   case Success(T)
-  case Failure(String)
+  case Failure(ErrorType)
 
   public static func success(value: T) -> Try<T> {
     return .Success(value)
   }
 
-  public static func failure(desc: String) -> Try<T> {
-    return .Failure(desc)
+  public static func failure(error: ErrorType) -> Try<T> {
+    return .Failure(error)
   }
 
   public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
     switch self {
     case Success(let value):
       return f(value)
-    case Failure(let desc):
-      return .failure(desc)
+    case Failure(let error):
+      return .Failure(error)
     }
   }
 
   public func map<U>(@noescape f: T -> U) -> Try<U> {
-    return flatMap { e in .success(f(e)) }
+    return flatMap { e in .Success(f(e)) }
   }
 
-  public var value: T? {
+  public func value() throws -> T {
     switch self {
     case Success(let value):
       return value
-    case Failure:
-      return nil
-    }
-  }
-
-  public var failureDescription: String? {
-    switch self {
-    case Success:
-      return nil
-    case Failure(let desc):
-      return desc
+    case Failure(let error):
+      throw error
     }
   }
 
@@ -62,8 +53,8 @@ extension Try: CustomStringConvertible, CustomDebugStringConvertible {
     switch self {
     case .Success(let value):
       return "Success(\(value))"
-    case .Failure(let desc):
-      return "Failure(\"\(desc)\")"
+    case .Failure(let error):
+      return "Failure(\(error))"
     }
   }
 
@@ -71,8 +62,8 @@ extension Try: CustomStringConvertible, CustomDebugStringConvertible {
     switch self {
     case .Success(let value):
       return "Success(\(String(reflecting: value)))"
-    case .Failure(let desc):
-      return "Failure(\"\(desc)\")"
+    case .Failure(let error):
+      return "Failure(\(String(reflecting: error)))"
     }
   }
 }
@@ -85,8 +76,9 @@ public func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   switch (lhs, rhs) {
   case (.Success(let lhs), .Success(let rhs)):
     return lhs == rhs
-  case (.Failure(let lhs), .Failure(let rhs)):
-    return lhs == rhs
+  case (.Failure(let lhs as NSError), .Failure(let rhs as NSError)):
+    return lhs.domain == rhs.domain
+        && lhs.code == rhs.code
   default:
     return false
   }

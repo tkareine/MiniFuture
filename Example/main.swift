@@ -1,7 +1,9 @@
 import Foundation
 
-func assertToString<T>(actual: T, _ expected: String) {
-  assert(String(actual) == expected)
+enum Error: ErrorType {
+  case Deliberate(String)
+  case FailedLoadingURL(NSURL)
+  case InvalidHTML(String)
 }
 
 extension String {
@@ -26,26 +28,26 @@ func immediateFuturesExample() {
   let succeeded = Future.succeeded(1)
 
   assert(succeeded.isCompleted)
-  assertToString(succeeded.get(), "Success(1)")
+  assert(succeeded.get() == .Success(1))
 
-  let failed = Future<Int>.failed("deliberate")
+  let failed = Future<Int>.failed(Error.Deliberate("42"))
 
   assert(failed.isCompleted)
-  assertToString(failed.get(), "Failure(\"deliberate\")")
+  assert(failed.get() == .Failure(Error.Deliberate("42")))
 }
 
 func asyncFuturesExample() {
   let succeeding = Future<Int>.async {
     NSThread.sleepForTimeInterval(0.2)
-    return .success(1)
+    return .Success(1)
   }
-  assertToString(succeeding.get(), "Success(1)")
+  assert(succeeding.get() == .Success(1))
 
   let failing = Future<Int>.async {
     NSThread.sleepForTimeInterval(0.2)
-    return .failure("deliberate")
+    return .Failure(Error.Deliberate("42"))
   }
-  assertToString(failing.get(), "Failure(\"deliberate\")")
+  assert(failing.get() == .Failure(Error.Deliberate("42")))
 }
 
 func promiseFuturesExample() {
@@ -61,37 +63,44 @@ func promiseFuturesExample() {
 
   let result = fut.get()
   assert(fut.isCompleted == true)
-  assertToString(result, "Success(1)")
+  assert(result == .Success(1))
 }
 
 func outerChainingFuturesExample() {
-  let fut0: Future<Int> = Future.async { .success(0) }
+  let fut0: Future<Int> = Future.async { .Success(0) }
   let fut1: Future<[Int]> = fut0.flatMap { Future.succeeded([$0, 1]) }
-  let fut2: Future<[Int]> = fut1.flatMap { e in Future.failed(String(e + [2])) }
+  let fut2: Future<[Int]> = fut1.flatMap { e in Future.failed(Error.Deliberate(String(e + [2]))) }
   let fut3: Future<[Int]> = fut2.flatMap { Future.succeeded($0 + [3]) }
 
-  assertToString(fut0.get(), "Success(0)")
-  assertToString(fut1.get(), "Success([0, 1])")
-  assertToString(fut2.get(), "Failure(\"[0, 1, 2]\")")
-  assertToString(fut3.get(), "Failure(\"[0, 1, 2]\")")
+  assert(String(fut0.get()) == "Success(0)")
+  assert(String(fut1.get()) == "Success([0, 1])")
+  assert(String(fut2.get()) == "Failure(Deliberate(\"[0, 1, 2]\"))")
+  assert(String(fut3.get()) == "Failure(Deliberate(\"[0, 1, 2]\"))")
 }
 
 func innerChainingFuturesExample() {
   let fut: Future<[Int]> = Future.succeeded([0]).flatMap { e in
     Future.succeeded(e + [1]).flatMap { e in
-      let f: Future<[Int]> = Future.async { .failure(String(e + [2])) }
+      let f: Future<[Int]> = Future.async { Try<[Int]>.Failure(Error.Deliberate(String(e + [2]))) }
       return f.flatMap { Future.succeeded($0 + [3]) }
     }
   }
 
-  assertToString(fut.get(), "Failure(\"[0, 1, 2]\")")
+  do {
+    try fut.get().value()
+    fatalError("should not come here")
+  } catch Error.Deliberate(let err) {
+    assert(err == "[0, 1, 2]")
+  } catch {
+    fatalError("should not come here")
+  }
 }
 
 func innerAndOuterChainingAsyncFuturesExample() {
-  let futBegin = Future.async { .success(0) }
+  let futBegin = Future.async { .Success(0) }
   let futEnd: Future<[Int]> = futBegin.flatMap { e0 in
     let futIn0 = Future.succeeded(10).flatMap { e1 in
-      Future.async { .success([e1] + [11]) }
+      Future.async { .Success([e1] + [11]) }
     }
 
     let futIn1 = Future.succeeded([20]).flatMap {
@@ -105,8 +114,8 @@ func innerAndOuterChainingAsyncFuturesExample() {
     }
   }
 
-  assertToString(futBegin.get(), "Success(0)")
-  assertToString(futEnd.get(), "Success([0, 10, 11, 20, 21])")
+  assert(futBegin.get() == .Success(0))
+  assert(String(futEnd.get()) == "Success([0, 10, 11, 20, 21])")
 }
 
 func realisticFutureExample() {
@@ -120,12 +129,12 @@ func realisticFutureExample() {
   func loadURL(url: NSURL) -> Future<NSData> {
     let promise = Future<NSData>.promise()
     let task = NSURLSession.sharedSession().dataTaskWithURL(url, completionHandler: { data, response, error in
-      if error != nil {
-        promise.reject("failed loading URL: \(url)")
+      if let err: NSError = error {
+        promise.reject(err)
       } else if let d = data {
         promise.resolve(d)
       } else {
-        promise.reject("unknown error at loading URL: \(url)")
+        promise.reject(Error.FailedLoadingURL(url))
       }
     })
     task.resume()
@@ -152,7 +161,7 @@ func realisticFutureExample() {
       node = try doc.rootHTMLNode()
       found = try node.nodeForXPath(xpath)
     } catch let error as NSError {
-      return Future.failed("failed parsing HTML: \(error)")
+      return Future.failed(error)
     }
 
     return Future.succeeded(found)
@@ -177,8 +186,8 @@ func realisticFutureExample() {
   case .Success(let value):
     let excerpt = value.textContents!.excerpt(72)
     print("Excerpt from today's featured article at Wikipedia: \(excerpt)")
-  case .Failure(let desc):
-    print("Error getting today's featured article from Wikipedia: \(desc)")
+  case .Failure(let error):
+    print("Error getting today's featured article from Wikipedia: \(error)")
   }
 }
 

@@ -36,11 +36,11 @@ public class Future<T> {
   }
 
   public class func succeeded(val: T) -> ImmediateFuture<T> {
-    return fromTry(.success(val))
+    return fromTry(.Success(val))
   }
 
-  public class func failed(val: String) -> ImmediateFuture<T> {
-    return fromTry(.failure(val))
+  public class func failed(error: ErrorType) -> ImmediateFuture<T> {
+    return fromTry(.Failure(error))
   }
 
   public class func fromTry(val: Try<T>) -> ImmediateFuture<T> {
@@ -81,10 +81,10 @@ public class Future<T> {
       switch res {
       case .Success(let value):
         f(value).onComplete(promise.complete)
-      case .Failure(let desc):
+      case .Failure(let error):
         // we cannot cast dynamically with generic types, so let's create a
         // new value
-        promise.complete(.failure(desc))
+        promise.complete(.Failure(error))
       }
     }
     return promise
@@ -171,18 +171,18 @@ public class PromiseFuture<T>: Future<T> {
   }
 
   public func resolve(value: T) {
-    complete(.success(value))
+    complete(.Success(value))
   }
 
-  public func reject(description: String) {
-    complete(.failure(description))
+  public func reject(error: ErrorType) {
+    complete(.Failure(error))
   }
 
   public func complete(value: Try<T>) {
     let callbacks: [CompletionCallback] = condition.synchronized { _ in
       if self.result != nil {
         fatalError("Tried to complete PromiseFuture with \(value.value), but " +
-          "the future is already completed with \(self.result!.value)")
+          "the future is already completed with \(self.result!)")
       }
 
       self.result = value
