@@ -103,6 +103,12 @@ side-effects to be run when the Future completes.
 ```swift
 extension String {
   func excerpt(maxLength: Int) -> String {
+    precondition(maxLength >= 0, "maxLength must be positive")
+
+    if maxLength == 0 {
+      return ""
+    }
+
     let length = characters.count
 
     if length <= maxLength {

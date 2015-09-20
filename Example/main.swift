@@ -6,6 +6,12 @@ func assertToString<T>(actual: T, _ expected: String) {
 
 extension String {
   func excerpt(maxLength: Int) -> String {
+    precondition(maxLength >= 0, "maxLength must be positive")
+
+    if maxLength == 0 {
+      return ""
+    }
+
     let length = characters.count
 
     if length <= maxLength {
