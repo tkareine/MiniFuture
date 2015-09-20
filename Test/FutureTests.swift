@@ -20,7 +20,7 @@ class FutureTests: XCTestCase {
 
     XCTAssertTrue(fut.isCompleted)  // no need to wait with `get`
 
-    let res = fut.get()
+    fut.get()
 
     XCTAssertEqual(fut.get().description, "Failure(\"1\")")
     XCTAssertEqual(fut.description, "ImmediateFuture(Optional(Failure(\"1\")))")
@@ -154,13 +154,10 @@ class FutureTests: XCTestCase {
     let sem1 = Semaphore()
     let fut1: Future<[Int]> = fut0.flatMap { e in
       sem1.wait()
-      return Future.failed(toString(e + [2]))
+      return Future.failed(String(e + [2]))
     }
 
-    let fut2: Future<[Int]> = fut1.flatMap { e in
-      fatalError("must not be called")
-      return Future.succeeded(e + [3])
-    }
+    let fut2: Future<[Int]> = fut1.flatMap(futureFunCausingFatalError)
 
     XCTAssertFalse(fut0.isCompleted)
 
@@ -198,13 +195,10 @@ class FutureTests: XCTestCase {
     let sem2 = Semaphore()
     let fut2: Future<[Int]> = fut1.flatMap { e in
       sem2.wait()
-      return Future.async { .failure(toString(e + [2])) }
+      return Future.async { .failure(String(e + [2])) }
     }
 
-    let fut3: Future<[Int]> = fut2.flatMap { e in
-      fatalError("must not be called")
-      return Future.async { .success(e + [2]) }
-    }
+    let fut3: Future<[Int]> = fut2.flatMap(futureFunCausingFatalError)
 
     XCTAssertFalse(fut0.isCompleted)
 
@@ -245,10 +239,7 @@ class FutureTests: XCTestCase {
     let futOut: Future<[Int]> = Future.succeeded(0).flatMap { e0 in
       futIn = Future.succeeded([e0, 1]).flatMap { e1 in
         semIn.wait()
-        return Future<[Int]>.failed(toString(e1 + [2])).flatMap { e2 in
-          fatalError("must not be called")
-          return Future.succeeded(e2 + [3])
-        }
+        return Future<[Int]>.failed(String(e1 + [2])).flatMap(futureFunCausingFatalError)
       }
       semOut.signal()
       return futIn
@@ -284,11 +275,8 @@ class FutureTests: XCTestCase {
       }
 
       futIn = f.flatMap { e1 in
-        let f: Future<[Int]> = Future.async { .failure(toString(e1 + [2])) }
-        return f.flatMap { e2 in
-          fatalError("must not be called")
-          return Future.succeeded(e2 + [3])
-        }
+        let f: Future<[Int]> = Future.async { .failure(String(e1 + [2])) }
+        return f.flatMap(futureFunCausingFatalError)
       }
       semIn.signal()
       return futIn
@@ -340,4 +328,8 @@ class FutureTests: XCTestCase {
     let fut = Future<Int>.failed("1").map { [$0, 2] }
     XCTAssertEqual(fut.get().description, "Failure(\"1\")")
   }
+}
+
+private func futureFunCausingFatalError(_: [Int]) -> Future<[Int]> {
+  fatalError("must not be called")
 }

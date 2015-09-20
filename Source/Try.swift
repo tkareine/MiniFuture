@@ -57,24 +57,21 @@ public enum Try<T> {
   }
 }
 
-extension Try: Printable, DebugPrintable {
+extension Try: CustomStringConvertible, CustomDebugStringConvertible {
   public var description: String {
-    return describeWith(print)
+    switch self {
+    case .Success(let box):
+      return "Success(\(String(box.value)))"
+    case .Failure(let desc):
+      return "Failure(\"\(desc)\")"
+    }
   }
 
   public var debugDescription: String {
-    return describeWith(debugPrint)
-  }
-
-  private func describeWith(@noescape printFn: (Any, inout String) -> Void) -> String {
     switch self {
-    case Success(let box):
-      var str = ""
-      print("Success(", &str)
-      printFn(box.value, &str)
-      print(")", &str)
-      return str
-    case Failure(let desc):
+    case .Success(let box):
+      return "Success(\(String(reflecting: box.value)))"
+    case .Failure(let desc):
       return "Failure(\"\(desc)\")"
     }
   }

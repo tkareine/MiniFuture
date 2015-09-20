@@ -1,19 +1,18 @@
 import Foundation
 
-func assertToString<T>(actual: T, expected: String) {
-  assert(toString(actual) == expected)
+func assertToString<T>(actual: T, _ expected: String) {
+  assert(String(actual) == expected)
 }
 
 extension String {
   func excerpt(maxLength: Int) -> String {
-    let length = count(self)
+    let length = characters.count
 
     if length <= maxLength {
       return self
     }
 
-    let idx = advance(self.startIndex, maxLength)
-    return self[Range(start: self.startIndex, end: idx)] + "…"
+    return self[self.startIndex..<startIndex.advancedBy(maxLength-1)] + "…"
   }
 }
 
@@ -62,7 +61,7 @@ func promiseFuturesExample() {
 func outerChainingFuturesExample() {
   let fut0: Future<Int> = Future.async { .success(0) }
   let fut1: Future<[Int]> = fut0.flatMap { Future.succeeded([$0, 1]) }
-  let fut2: Future<[Int]> = fut1.flatMap { e in Future.failed(toString(e + [2])) }
+  let fut2: Future<[Int]> = fut1.flatMap { e in Future.failed(String(e + [2])) }
   let fut3: Future<[Int]> = fut2.flatMap { Future.succeeded($0 + [3]) }
 
   assertToString(fut0.get(), "Success(0)")
@@ -74,7 +73,7 @@ func outerChainingFuturesExample() {
 func innerChainingFuturesExample() {
   let fut: Future<[Int]> = Future.succeeded([0]).flatMap { e in
     Future.succeeded(e + [1]).flatMap { e in
-      let f: Future<[Int]> = Future.async { .failure(toString(e + [2])) }
+      let f: Future<[Int]> = Future.async { .failure(String(e + [2])) }
       return f.flatMap { Future.succeeded($0 + [3]) }
     }
   }
@@ -138,19 +137,19 @@ func realisticFutureExample() {
    * background in a queue worker thread.
    */
   func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
-    var err: NSError?
+    let doc: HTMLDocument
+    let node: HTMLNode
+    let found: HTMLNode
 
-    if let doc = HTMLDocument.readDataAsUTF8(data, error: &err),
-           node = doc.rootHTMLNode(&err),
-           found = node.nodeForXPath(xpath, error: &err) {
-      return Future.succeeded(found)
+    do {
+      doc = try HTMLDocument.readDataAsUTF8(data)
+      node = try doc.rootHTMLNode()
+      found = try node.nodeForXPath(xpath)
+    } catch let error as NSError {
+      return Future.failed("failed parsing HTML: \(error)")
     }
 
-    if let e = err {
-      return Future.failed("failed parsing HTML: \(e)")
-    } else {
-      return Future.failed("unknown error at parsing HTML")
-    }
+    return Future.succeeded(found)
   }
 
   let wikipediaURL = NSURL(string: "https://en.wikipedia.org/wiki/Main_Page")!
@@ -163,7 +162,7 @@ func realisticFutureExample() {
      * and further flatMap methods are not called. Calls to flatMap are always
      * executed in a queue worker thread.
      */
-    .flatMap { readXPathFromHTML(featuredArticleXPath, $0) }
+    .flatMap { readXPathFromHTML(featuredArticleXPath, data: $0) }
     /* Wait for Future chain to complete. This acts as a synchronization point.
      */
     .get()
@@ -171,9 +170,9 @@ func realisticFutureExample() {
   switch result {
   case .Success(let box):
     let excerpt = box.value.textContents!.excerpt(72)
-    println("Excerpt from today's featured article at Wikipedia: \(excerpt)")
+    print("Excerpt from today's featured article at Wikipedia: \(excerpt)")
   case .Failure(let desc):
-    println("Error getting today's featured article from Wikipedia: \(desc)")
+    print("Error getting today's featured article from Wikipedia: \(desc)")
   }
 }
 

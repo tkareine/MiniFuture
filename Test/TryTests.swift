@@ -7,7 +7,7 @@ class TryTests: XCTestCase {
     XCTAssert(t.value! == ["a", "b"])
     XCTAssertTrue(t.isSuccess)
     XCTAssertFalse(t.isFailure)
-    XCTAssertEqual(t.description, "Success([a, b])")
+    XCTAssertEqual(t.description, "Success([\"a\", \"b\"])")
     XCTAssertEqual(t.debugDescription, "Success([\"a\", \"b\"])")
   }
 
@@ -24,7 +24,7 @@ class TryTests: XCTestCase {
 
   func testFlatMap() {
     let t0 = Try.success(1).flatMap { e in .success([e, 2]) }
-    let t1: Try<[Int]> = t0.flatMap { e in .failure(toString(e + [3])) }
+    let t1: Try<[Int]> = t0.flatMap { e in .failure(String(e + [3])) }
     let t2 = t1.flatMap { e in .success(e + [4]) }
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
@@ -34,7 +34,7 @@ class TryTests: XCTestCase {
 
   func testMap() {
     let t0 = Try.success(1).map { e in [e, 2] }
-    let t1: Try<[Int]> = t0.flatMap { e in .failure(toString(e + [3])) }
+    let t1: Try<[Int]> = t0.flatMap { e in .failure(String(e + [3])) }
     let t2 = t1.map { e in e + [4] }
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
@@ -52,11 +52,11 @@ class TryTests: XCTestCase {
   }
 
   func testLeftIdentityMonadLaw() {
-    func newSuccess<T>(x: T) -> Try<T> {
-      return .success(x)
+    func newSuccess(x: Int) -> Try<Int> {
+      return .Success(x)
     }
 
-    let lhs = Try.success(1).flatMap(newSuccess)
+    let lhs = Try.Success(1).flatMap(newSuccess)
     let rhs = newSuccess(1)
 
     XCTAssert(lhs == rhs)

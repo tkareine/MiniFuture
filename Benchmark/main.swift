@@ -75,7 +75,7 @@ func formatMeasurement(label: String, withData m: Measurement) -> String {
   return String(format: "%@: %.f ms (± %.f ms)", label, m.mean, m.stddev)
 }
 
-println("iterations: \(NumberOfIterations), futures composed: \(NumberOfFutureCompositions)\n")
+print("iterations: \(NumberOfIterations), futures composed: \(NumberOfFutureCompositions)\n")
 
-println(formatMeasurement("warm up", withData: measure(benchmarkFutures)))
-println(formatMeasurement("measure", withData: measure(benchmarkFutures)))
+print(formatMeasurement("warm up", withData: measure(benchmarkFutures)))
+print(formatMeasurement("measure", withData: measure(benchmarkFutures)))

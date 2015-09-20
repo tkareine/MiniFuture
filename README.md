@@ -17,7 +17,7 @@ below.
 * iOS >= 7.0 (if installing by copying source files manually) or
   iOS >= 8.0 (if installing as embedded framework)
 * Mac OS X >= 10.9
-* Xcode >= 6.3 (Swift 1.2)
+* Xcode >= 7.0 (Swift 2)
 
 ## Installation
 
@@ -103,14 +103,13 @@ side-effects to be run when the Future completes.
 ```swift
 extension String {
   func excerpt(maxLength: Int) -> String {
-    let length = count(self)
+    let length = characters.count
 
     if length <= maxLength {
       return self
     }
 
-    let idx = advance(self.startIndex, maxLength)
-    return self[Range(start: self.startIndex, end: idx)] + "…"
+    return self[self.startIndex..<startIndex.advancedBy(maxLength-1))] + "…"
   }
 }
 
@@ -147,19 +146,19 @@ func loadURL(url: NSURL) -> Future<NSData> {
  * background in a queue worker thread.
  */
 func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
-  var err: NSError?
+  let doc: HTMLDocument
+  let node: HTMLNode
+  let found: HTMLNode
 
-  if let doc = HTMLDocument.readDataAsUTF8(data, error: &err),
-         node = doc.rootHTMLNode(&err),
-         found = node.nodeForXPath(xpath, error: &err) {
-    return Future.succeeded(found)
+  do {
+    doc = try HTMLDocument.readDataAsUTF8(data)
+    node = try doc.rootHTMLNode()
+    found = try node.nodeForXPath(xpath)
+  } catch let error as NSError {
+    return Future.failed("failed parsing HTML: \(error)")
   }
 
-  if let e = err {
-    return Future.failed("failed parsing HTML: \(e)")
-  } else {
-    return Future.failed("unknown error at parsing HTML")
-  }
+  return Future.succeeded(found)
 }
 
 let wikipediaURL = NSURL(string: "https://en.wikipedia.org/wiki/Main_Page")!
@@ -172,7 +171,7 @@ let result = loadURL(wikipediaURL)
    * and further flatMap methods are not called. Calls to flatMap are always
    * executed in a queue worker thread.
    */
-  .flatMap { readXPathFromHTML(featuredArticleXPath, $0) }
+  .flatMap { readXPathFromHTML(featuredArticleXPath, data: $0) }
   /* Wait for Future chain to complete. This acts as a synchronization point.
    */
   .get()
@@ -180,9 +179,9 @@ let result = loadURL(wikipediaURL)
 switch result {
 case .Success(let box):
   let excerpt = box.value.textContents!.excerpt(72)
-  println("Excerpt from today's featured article at Wikipedia: \(excerpt)")
+  print("Excerpt from today's featured article at Wikipedia: \(excerpt)")
 case .Failure(let desc):
-  println("Error getting today's featured article from Wikipedia: \(desc)")
+  print("Error getting today's featured article from Wikipedia: \(desc)")
 }
 ```
 

@@ -227,19 +227,12 @@ public class PromiseFuture<T>: Future<T> {
   }
 }
 
-extension Future: Printable, DebugPrintable {
+extension Future: CustomStringConvertible, CustomDebugStringConvertible {
   public var description: String {
-    return describeWith(print)
+    return "\(futureName)(\(String(result)))"
   }
 
   public var debugDescription: String {
-    return describeWith(debugPrint)
-  }
-
-  private func describeWith(@noescape printFn: (Any, inout String) -> Void) -> String {
-    var str = "\(futureName)("
-    printFn(result, &str)
-    print(")", &str)
-    return str
+    return "\(futureName)(\(String(reflecting: result)))"
   }
 }
