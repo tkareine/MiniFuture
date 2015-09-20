@@ -4,14 +4,6 @@ public enum Try<T> {
   case Success(T)
   case Failure(ErrorType)
 
-  public static func success(value: T) -> Try<T> {
-    return .Success(value)
-  }
-
-  public static func failure(error: ErrorType) -> Try<T> {
-    return .Failure(error)
-  }
-
   public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
     switch self {
     case Success(let value):
