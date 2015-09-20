@@ -1,11 +1,11 @@
 import Foundation
 
 public enum Try<T> {
-  case Success(Box<T>)
+  case Success(T)
   case Failure(String)
 
   public static func success(value: T) -> Try<T> {
-    return .Success(Box(value))
+    return .Success(value)
   }
 
   public static func failure(desc: String) -> Try<T> {
@@ -14,8 +14,8 @@ public enum Try<T> {
 
   public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
     switch self {
-    case Success(let box):
-      return f(box.value)
+    case Success(let value):
+      return f(value)
     case Failure(let desc):
       return .failure(desc)
     }
@@ -27,8 +27,8 @@ public enum Try<T> {
 
   public var value: T? {
     switch self {
-    case Success(let box):
-      return box.value
+    case Success(let value):
+      return value
     case Failure:
       return nil
     }
@@ -60,8 +60,8 @@ public enum Try<T> {
 extension Try: CustomStringConvertible, CustomDebugStringConvertible {
   public var description: String {
     switch self {
-    case .Success(let box):
-      return "Success(\(String(box.value)))"
+    case .Success(let value):
+      return "Success(\(value))"
     case .Failure(let desc):
       return "Failure(\"\(desc)\")"
     }
@@ -69,8 +69,8 @@ extension Try: CustomStringConvertible, CustomDebugStringConvertible {
 
   public var debugDescription: String {
     switch self {
-    case .Success(let box):
-      return "Success(\(String(reflecting: box.value)))"
+    case .Success(let value):
+      return "Success(\(String(reflecting: value)))"
     case .Failure(let desc):
       return "Failure(\"\(desc)\")"
     }
@@ -84,7 +84,7 @@ extension Try: CustomStringConvertible, CustomDebugStringConvertible {
 public func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   switch (lhs, rhs) {
   case (.Success(let lhs), .Success(let rhs)):
-    return lhs.value == rhs.value
+    return lhs == rhs
   case (.Failure(let lhs), .Failure(let rhs)):
     return lhs == rhs
   default:

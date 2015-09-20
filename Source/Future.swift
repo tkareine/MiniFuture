@@ -79,8 +79,8 @@ public class Future<T> {
     let promise = PromiseFuture<U>()
     onComplete { res in
       switch res {
-      case .Success(let box):
-        f(box.value).onComplete(promise.complete)
+      case .Success(let value):
+        f(value).onComplete(promise.complete)
       case .Failure(let desc):
         // we cannot cast dynamically with generic types, so let's create a
         // new value
@@ -229,7 +229,7 @@ public class PromiseFuture<T>: Future<T> {
 
 extension Future: CustomStringConvertible, CustomDebugStringConvertible {
   public var description: String {
-    return "\(futureName)(\(String(result)))"
+    return "\(futureName)(\(result))"
   }
 
   public var debugDescription: String {

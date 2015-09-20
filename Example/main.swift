@@ -174,8 +174,8 @@ func realisticFutureExample() {
     .get()
 
   switch result {
-  case .Success(let box):
-    let excerpt = box.value.textContents!.excerpt(72)
+  case .Success(let value):
+    let excerpt = value.textContents!.excerpt(72)
     print("Excerpt from today's featured article at Wikipedia: \(excerpt)")
   case .Failure(let desc):
     print("Error getting today's featured article from Wikipedia: \(desc)")
