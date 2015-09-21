@@ -55,6 +55,15 @@ class FutureTests: XCTestCase {
     XCTAssertEqual(fut.description, "AsyncFuture(Optional(Failure(Deliberate(\"42\"))))")
   }
 
+  func testGetThrowingAsyncFuture() {
+    let fut = Future<Int>.async { throw Error.Deliberate("42") }
+    let res = fut.get()
+
+    XCTAssertTrue(fut.isCompleted)
+    XCTAssertEqual(res.description, "Failure(Deliberate(\"42\"))")
+    XCTAssertEqual(fut.description, "AsyncFuture(Optional(Failure(Deliberate(\"42\"))))")
+  }
+
   func testGetSucceedingPromiseFuture() {
     let sem = Semaphore()
     let fut = Future<Int>.promise()
@@ -141,6 +150,60 @@ class FutureTests: XCTestCase {
     XCTAssertTrue(fut.isCompleted)
     XCTAssert(res == fut.get())
     XCTAssertEqual(res.description, "Success(1)")
+  }
+
+  func testFlatMapCompositionWithSuccess() {
+    let fut = Future.succeeded(1)
+      .flatMap { Future.succeeded([$0, 2]) }
+      .flatMap { Future.succeeded($0 + [3]) }
+
+    XCTAssertEqual(fut.get().description, "Success([1, 2, 3])")
+  }
+
+  func testFlatMapCompositionWithFailure() {
+    let fut = Future.succeeded(1)
+      .flatMap { Future<[Int]>.failed(Error.Deliberate(String($0))) }
+      .flatMap { Future.succeeded($0 + [2]) }
+
+    XCTAssertEqual(fut.get().description, "Failure(Deliberate(\"1\"))")
+  }
+
+  func testFlatMapCompositionWithThrows() {
+    func throwing(e: Int) throws -> Future<[Int]> {
+      throw Error.Deliberate(String(e))
+    }
+
+    let fut = Future.succeeded(1)
+      .flatMap(throwing)
+      .flatMap { Future.succeeded($0 + [2]) }
+
+    XCTAssertEqual(fut.get().description, "Failure(Deliberate(\"1\"))")
+  }
+
+  func testMapCompositionWithSuccess() {
+    let fut = Future.succeeded(1)
+      .map { [$0, 2] }
+      .map { $0 + [3] }
+
+    XCTAssertEqual(fut.get().description, "Success([1, 2, 3])")
+  }
+
+  func testMapCompositionWithFailure() {
+    let fut = Future<Int>.failed(Error.Deliberate("42")).map { [$0, 2] }
+
+    XCTAssertEqual(fut.get().description, "Failure(Deliberate(\"42\"))")
+  }
+
+  func testMapCompositionWithThrows() {
+    func throwing(e: Int) throws -> [Int] {
+      throw Error.Deliberate(String(e))
+    }
+
+    let fut = Future.succeeded(1)
+      .map(throwing)
+      .map { $0 + [2] }
+
+    XCTAssertEqual(fut.get().description, "Failure(Deliberate(\"1\"))")
   }
 
   func testOuterFlatMapCompositionStartingWithImmediateFuture() {
@@ -317,16 +380,6 @@ class FutureTests: XCTestCase {
     }
 
     XCTAssertEqual(futOut.get().description, "Success([0, 10, 11, 20, 21])")
-  }
-
-  func testMapCompositionWithSuccess() {
-    let fut = Future.succeeded(1).map { [$0, 2] }
-    XCTAssertEqual(fut.get().description, "Success([1, 2])")
-  }
-
-  func testMapCompositionWithFailure() {
-    let fut = Future<Int>.failed(Error.Deliberate("42")).map { [$0, 2] }
-    XCTAssertEqual(fut.get().description, "Failure(Deliberate(\"42\"))")
   }
 }
 

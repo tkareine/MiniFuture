@@ -31,7 +31,7 @@ struct FutureExecution {
 }
 
 public class Future<T> {
-  public class func async(block: () -> Try<T>) -> AsyncFuture<T> {
+  public class func async(block: () throws -> Try<T>) -> AsyncFuture<T> {
     return AsyncFuture(block)
   }
 
@@ -75,12 +75,18 @@ public class Future<T> {
     fatalError("must be overridden")
   }
 
-  public func flatMap<U>(f: T -> Future<U>) -> Future<U> {
+  public func flatMap<U>(f: T throws -> Future<U>) -> Future<U> {
     let promise = PromiseFuture<U>()
     onComplete { res in
       switch res {
       case .Success(let value):
-        f(value).onComplete(promise.complete)
+        let fut: Future<U>
+        do {
+          fut = try f(value)
+        } catch {
+          fut = Future<U>.failed(error)
+        }
+        fut.onComplete(promise.complete)
       case .Failure(let error):
         // we cannot cast dynamically with generic types, so let's create a
         // new value
@@ -90,8 +96,14 @@ public class Future<T> {
     return promise
   }
 
-  public func map<U>(f: T -> U) -> Future<U> {
-    return flatMap { e in Future<U>.succeeded(f(e)) }
+  public func map<U>(f: T throws -> U) -> Future<U> {
+    return flatMap { e in
+      do {
+        return Future<U>.succeeded(try f(e))
+      } catch {
+        return Future<U>.failed(error)
+      }
+    }
   }
 }
 
@@ -133,10 +145,16 @@ public class AsyncFuture<T>: Future<T> {
     return "AsyncFuture"
   }
 
-  private init(_ block: () -> Try<T>) {
+  private init(_ block: () throws -> Try<T>) {
     super.init(nil)
     FutureExecution.async(Group) {
-      self.result = block()
+      let res: Try<T>
+      do {
+        res = try block()
+      } catch {
+        res = Try<T>.Failure(error)
+      }
+      self.result = res
     }
   }
 

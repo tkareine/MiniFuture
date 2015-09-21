@@ -66,6 +66,15 @@ func promiseFuturesExample() {
   assert(result == .Success(1))
 }
 
+func chainingFuturesExample() {
+  let fut: Future<[Int]> = Future.async { .Success(0) }
+    .flatMap { Future.succeeded([$0, 1]) }
+    .flatMap { throw Error.Deliberate(String($0)) }
+    .flatMap { Future.succeeded($0 + [2]) }
+
+  assert(String(fut.get()) == "Failure(Deliberate(\"[0, 1]\"))")
+}
+
 func outerChainingFuturesExample() {
   let fut0: Future<Int> = Future.async { .Success(0) }
   let fut1: Future<[Int]> = fut0.flatMap { Future.succeeded([$0, 1]) }
@@ -151,19 +160,10 @@ func realisticFutureExample() {
    * Because this function gets called inside `Future#flatMap`, it's run in
    * background in a queue worker thread.
    */
-  func readXPathFromHTML(xpath: String, data: NSData) -> Future<HTMLNode> {
-    let doc: HTMLDocument
-    let node: HTMLNode
-    let found: HTMLNode
-
-    do {
-      doc = try HTMLDocument.readDataAsUTF8(data)
-      node = try doc.rootHTMLNode()
-      found = try node.nodeForXPath(xpath)
-    } catch let error as NSError {
-      return Future.failed(error)
-    }
-
+  func readXPathFromHTML(xpath: String, data: NSData) throws -> Future<HTMLNode> {
+    let doc = try HTMLDocument.readDataAsUTF8(data)
+    let node = try doc.rootHTMLNode()
+    let found = try node.nodeForXPath(xpath)
     return Future.succeeded(found)
   }
 
@@ -177,7 +177,7 @@ func realisticFutureExample() {
      * and further flatMap methods are not called. Calls to flatMap are always
      * executed in a queue worker thread.
      */
-    .flatMap { readXPathFromHTML(featuredArticleXPath, data: $0) }
+    .flatMap { try readXPathFromHTML(featuredArticleXPath, data: $0) }
     /* Wait for Future chain to complete. This acts as a synchronization point.
      */
     .get()
@@ -194,6 +194,7 @@ func realisticFutureExample() {
 immediateFuturesExample()
 asyncFuturesExample()
 promiseFuturesExample()
+chainingFuturesExample()
 outerChainingFuturesExample()
 innerChainingFuturesExample()
 innerAndOuterChainingAsyncFuturesExample()
