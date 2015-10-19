@@ -1,3 +1,15 @@
+# 0.3.0 / 2015-10-19
+
+* Update code for Swift 2.0
+* Simplify pattern matching for `Try<T>.Success` by removing value
+  boxing workaround for the associated value
+* Use `ErrorType` instead of `String` for the associated value of
+  `Try<T>.Failure`. This enables using `NSError`s for failures.
+* Remove `Try.success` and `Try.failure` static factory functions as
+  unnecessary
+* Handle thrown exceptions inside the closures of `Future#flatMap(_:)`
+  and `Future#map(_:)`
+
 # 0.2.0 / 2015-04-19
 
 * Update code for Swift 1.2
