@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "MiniFuture"
-  s.version = "0.3.0"
+  s.version = "0.3.1"
   s.license = {:type => "MIT", :file => "LICENSE.txt"}
   s.summary = "A monadic Future design pattern implementation in Swift"
   s.homepage = "https://github.com/tkareine/MiniFuture"

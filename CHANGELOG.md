@@ -1,3 +1,7 @@
+# 0.3.1 / 2015-12-24
+
+* Set some `self` refs to be unowned for added memory safety
+
 # 0.3.0 / 2015-10-19
 
 * Update code for Swift 2.0
