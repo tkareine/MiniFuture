@@ -175,8 +175,8 @@ public class PromiseFuture<T>: Future<T> {
   private var completionCallbacks: [CompletionCallback] = []
 
   override public var isCompleted: Bool {
-    return condition.synchronized { [unowned self] _ in
-      self.result != nil
+    return condition.synchronized { _ in
+      result != nil
     }
   }
 
@@ -197,18 +197,18 @@ public class PromiseFuture<T>: Future<T> {
   }
 
   public func complete(value: Try<T>) {
-    let callbacks: [CompletionCallback] = condition.synchronized { [unowned self] _ in
-      if self.result != nil {
+    let callbacks: [CompletionCallback] = condition.synchronized { _ in
+      if result != nil {
         fatalError("Tried to complete PromiseFuture with \(value.value), but " +
-          "the future is already completed with \(self.result!)")
+          "the future is already completed with \(result!)")
       }
 
-      self.result = value
+      result = value
 
-      let callbacks = self.completionCallbacks
-      self.completionCallbacks = []
+      let callbacks = completionCallbacks
+      completionCallbacks = []
 
-      self.condition.signal()
+      condition.signal()
 
       return callbacks
     }
@@ -219,21 +219,21 @@ public class PromiseFuture<T>: Future<T> {
   }
 
   override public func get() -> Try<T> {
-    return condition.synchronized { [unowned self] wait in
-      while self.result == nil {
+    return condition.synchronized { wait in
+      while result == nil {
         wait()
       }
 
-      return self.result!
+      return result!
     }
   }
 
   override public func onComplete(block: CompletionCallback) {
-    let res: Try<T>? = condition.synchronized { [unowned self] _ in
-      let res = self.result
+    let res: Try<T>? = condition.synchronized { _ in
+      let res = result
 
       if res == nil {
-        self.completionCallbacks.append(block)
+        completionCallbacks.append(block)
       }
 
       return res
