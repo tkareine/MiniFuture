@@ -20,7 +20,7 @@ extension String {
       return self
     }
 
-    return self[self.startIndex..<startIndex.advancedBy(maxLength-1)] + "…"
+    return self[startIndex..<startIndex.advancedBy(maxLength-1)] + "…"
   }
 }
 
