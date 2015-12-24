@@ -135,7 +135,7 @@ public class AsyncFuture<T>: Future<T> {
 
   override public var isCompleted: Bool {
     var res = false
-    FutureExecution.sync {
+    FutureExecution.sync { [unowned self] in
       res = self.result != nil
     }
     return res
@@ -175,7 +175,7 @@ public class PromiseFuture<T>: Future<T> {
   private var completionCallbacks: [CompletionCallback] = []
 
   override public var isCompleted: Bool {
-    return condition.synchronized { _ in
+    return condition.synchronized { [unowned self] _ in
       self.result != nil
     }
   }
@@ -197,7 +197,7 @@ public class PromiseFuture<T>: Future<T> {
   }
 
   public func complete(value: Try<T>) {
-    let callbacks: [CompletionCallback] = condition.synchronized { _ in
+    let callbacks: [CompletionCallback] = condition.synchronized { [unowned self] _ in
       if self.result != nil {
         fatalError("Tried to complete PromiseFuture with \(value.value), but " +
           "the future is already completed with \(self.result!)")
@@ -219,7 +219,7 @@ public class PromiseFuture<T>: Future<T> {
   }
 
   override public func get() -> Try<T> {
-    return condition.synchronized { wait in
+    return condition.synchronized { [unowned self] wait in
       while self.result == nil {
         wait()
       }
@@ -229,7 +229,7 @@ public class PromiseFuture<T>: Future<T> {
   }
 
   override public func onComplete(block: CompletionCallback) {
-    let res: Try<T>? = condition.synchronized { _ in
+    let res: Try<T>? = condition.synchronized { [unowned self] _ in
       let res = self.result
 
       if res == nil {
