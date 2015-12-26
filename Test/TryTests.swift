@@ -29,20 +29,20 @@ class TryTests: XCTestCase {
     XCTAssertEqual(t.debugDescription, "Failure(Deliberate(\"42\"))")
   }
 
-  func testFlatMap() {
+  func testFlatMapComposition() {
     let t0 = Try.Success(1).flatMap { e in .Success([e, 2]) }
     let t1: Try<[Int]> = t0.flatMap { e in .Failure(Error.Deliberate(String(e + [3]))) }
-    let t2 = t1.flatMap { e in .Success(e + [4]) }
+    let t2 = t1.flatMap(tryFunCausingFatalError)
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
     XCTAssertEqual(t1.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
     XCTAssertEqual(t2.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
   }
 
-  func testMap() {
+  func testMapComposition() {
     let t0 = Try.Success(1).map { e in [e, 2] }
     let t1: Try<[Int]> = t0.flatMap { e in .Failure(Error.Deliberate(String(e + [3]))) }
-    let t2 = t1.map { e in e + [4] }
+    let t2 = t1.map(funCausingFatalError)
 
     XCTAssertEqual(t0.description, "Success([1, 2])")
     XCTAssertEqual(t1.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
@@ -91,4 +91,12 @@ class TryTests: XCTestCase {
 
     XCTAssert(lhs == rhs)
   }
+}
+
+private func tryFunCausingFatalError(_: [Int]) -> Try<[Int]> {
+  fatalError("must not be called")
+}
+
+private func funCausingFatalError(_: [Int]) -> [Int] {
+  fatalError("must not be called")
 }
