@@ -39,6 +39,12 @@ class TryTests: XCTestCase {
     XCTAssertEqual(t2.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
   }
 
+  func testFlatMapThrows() {
+    let t: Try<[Int]> = Try.Success(1).flatMap { e in throw Error.Deliberate(String([e, 2])) }
+
+    XCTAssertEqual(t.description, "Failure(Deliberate(\"[1, 2]\"))")
+  }
+
   func testMapComposition() {
     let t0 = Try.Success(1).map { e in [e, 2] }
     let t1: Try<[Int]> = t0.flatMap { e in .Failure(Error.Deliberate(String(e + [3]))) }
@@ -47,6 +53,12 @@ class TryTests: XCTestCase {
     XCTAssertEqual(t0.description, "Success([1, 2])")
     XCTAssertEqual(t1.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
     XCTAssertEqual(t2.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
+  }
+
+  func testMapThrows() {
+    let t: Try<[Int]> = Try.Success(1).map { e in throw Error.Deliberate(String([e, 2])) }
+
+    XCTAssertEqual(t.description, "Failure(Deliberate(\"[1, 2]\"))")
   }
 
   func testEquality() {

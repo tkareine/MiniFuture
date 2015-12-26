@@ -4,17 +4,27 @@ public enum Try<T> {
   case Success(T)
   case Failure(ErrorType)
 
-  public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
+  public func flatMap<U>(@noescape f: T throws -> Try<U>) -> Try<U> {
     switch self {
     case Success(let value):
-      return f(value)
+      do {
+        return try f(value)
+      } catch {
+        return .Failure(error)
+      }
     case Failure(let error):
       return .Failure(error)
     }
   }
 
-  public func map<U>(@noescape f: T -> U) -> Try<U> {
-    return flatMap { e in .Success(f(e)) }
+  public func map<U>(@noescape f: T throws -> U) -> Try<U> {
+    return flatMap { e in
+      do {
+        return .Success(try f(e))
+      } catch {
+        return .Failure(error)
+      }
+    }
   }
 
   public func value() throws -> T {
