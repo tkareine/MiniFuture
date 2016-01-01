@@ -1,3 +1,7 @@
+# 0.4.0 / 2016-01-01
+
+* Allow `Try#flatMap(_:)` and `Try.map(_:)` to throw errors
+
 # 0.3.1 / 2015-12-24
 
 * Set some `self` refs to be unowned for added memory safety
@@ -11,7 +15,7 @@
   `Try<T>.Failure`. This enables using `NSError`s for failures.
 * Remove `Try.success` and `Try.failure` static factory functions as
   unnecessary
-* Handle thrown exceptions inside the closures of `Future#flatMap(_:)`
+* Handle thrown errors inside the closures of `Future#flatMap(_:)`
   and `Future#map(_:)`
 
 # 0.2.0 / 2015-04-19
