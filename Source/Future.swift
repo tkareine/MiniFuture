@@ -31,23 +31,23 @@ struct FutureExecution {
 }
 
 public class Future<T> {
-  public class func async(block: () throws -> Try<T>) -> AsyncFuture<T> {
+  public static func async(block: () throws -> Try<T>) -> AsyncFuture<T> {
     return AsyncFuture(block)
   }
 
-  public class func succeeded(val: T) -> ImmediateFuture<T> {
+  public static func succeeded(val: T) -> ImmediateFuture<T> {
     return fromTry(.Success(val))
   }
 
-  public class func failed(error: ErrorType) -> ImmediateFuture<T> {
+  public static func failed(error: ErrorType) -> ImmediateFuture<T> {
     return fromTry(.Failure(error))
   }
 
-  public class func fromTry(val: Try<T>) -> ImmediateFuture<T> {
+  public static func fromTry(val: Try<T>) -> ImmediateFuture<T> {
     return ImmediateFuture(val)
   }
 
-  public class func promise() -> PromiseFuture<T> {
+  public static func promise() -> PromiseFuture<T> {
     return PromiseFuture()
   }
 
