@@ -137,6 +137,10 @@ run when the Future completes.
 
 ```swift
 extension String {
+  var trimmed: String {
+    return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+  }
+
   func excerpt(maxLength: Int) -> String {
     precondition(maxLength >= 0, "maxLength must be positive")
 
@@ -150,7 +154,7 @@ extension String {
       return self
     }
 
-    return self[self.startIndex..<startIndex.advancedBy(maxLength-1))] + "…"
+    return self[startIndex..<startIndex.advancedBy(maxLength-1)].trimmed + "…"
   }
 }
 
@@ -194,7 +198,7 @@ func readXPathFromHTML(xpath: String, data: NSData) throws -> Future<HTMLNode> {
 }
 
 let wikipediaURL = NSURL(string: "https://en.wikipedia.org/wiki/Main_Page")!
-let featuredArticleXPath = "//*[@id='mp-tfa']"
+let featuredArticleXPath = "//*[@id='mp-tfa']/p[1]"
 
 let result = loadURL(wikipediaURL)
   /* Future composition (chaining): when this Future completes successfully,
@@ -224,9 +228,7 @@ $ make example
 # xcodebuild output…
 
 ./build/Example
-Excerpt from today's featured article at Wikipedia:
-
-Kareena Kapoor (born 1980) is an Indian Bollywood actress. She is the daugh…
+Excerpt from today's featured article at Wikipedia: Upper and Lower Table Rock are two prominent volcanic plateaus just north of…
 ```
 
 ## Performance

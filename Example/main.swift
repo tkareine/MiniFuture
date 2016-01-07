@@ -7,6 +7,10 @@ enum Error: ErrorType {
 }
 
 extension String {
+  var trimmed: String {
+    return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+  }
+
   func excerpt(maxLength: Int) -> String {
     precondition(maxLength >= 0, "maxLength must be positive")
 
@@ -20,7 +24,7 @@ extension String {
       return self
     }
 
-    return self[startIndex..<startIndex.advancedBy(maxLength-1)] + "…"
+    return self[startIndex..<startIndex.advancedBy(maxLength-1)].trimmed + "…"
   }
 }
 
@@ -168,7 +172,7 @@ func realisticFutureExample() {
   }
 
   let wikipediaURL = NSURL(string: "https://en.wikipedia.org/wiki/Main_Page")!
-  let featuredArticleXPath = "//*[@id='mp-tfa']"
+  let featuredArticleXPath = "//*[@id='mp-tfa']/p[1]"
 
   let result = loadURL(wikipediaURL)
     /* Future composition (chaining): when this Future completes successfully,
