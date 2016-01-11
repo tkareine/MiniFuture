@@ -172,7 +172,7 @@ func realisticFutureExample() {
   }
 
   let wikipediaURL = NSURL(string: "https://en.wikipedia.org/wiki/Main_Page")!
-  let featuredArticleXPath = "//*[@id='mp-tfa']/p[1]"
+  let featuredArticleXPath = "//*[@id='mp-tfa']"
 
   let result = loadURL(wikipediaURL)
     /* Future composition (chaining): when this Future completes successfully,
