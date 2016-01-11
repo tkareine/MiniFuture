@@ -33,8 +33,8 @@
 		E99CE50C1A2A6A6B00D52D0E /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5031A2A642600D52D0E /* Future.swift */; };
 		E99CE50D1A2A6A6B00D52D0E /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5041A2A642600D52D0E /* Try.swift */; };
 		E9F433D01A33080800F8F0AC /* Semaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F433CF1A33080800F8F0AC /* Semaphore.swift */; };
-		E9FA3C571BB083DB0070379F /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA3C561BB083DB0070379F /* Error.swift */; settings = {ASSET_TAGS = (); }; };
-		E9FA3C581BB083DB0070379F /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA3C561BB083DB0070379F /* Error.swift */; settings = {ASSET_TAGS = (); }; };
+		E9FA3C571BB083DB0070379F /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA3C561BB083DB0070379F /* Error.swift */; };
+		E9FA3C581BB083DB0070379F /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA3C561BB083DB0070379F /* Error.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -399,6 +399,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.tkareine.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -421,6 +422,7 @@
 				DSTROOT = .;
 				INSTALL_PATH = /build;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -531,6 +533,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.tkareine.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -578,7 +581,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Example/Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
