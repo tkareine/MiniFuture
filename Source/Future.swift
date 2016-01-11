@@ -31,6 +31,11 @@ struct FutureExecution {
 }
 
 public class Future<T> {
+  /**
+   - note: Eventually, `block` closure parameter gets called from a concurrent
+   queue. Use proper synchronization when accessing shared state via references
+   captured in the closure.
+   */
   public static func async(block: () throws -> Try<T>) -> AsyncFuture<T> {
     return AsyncFuture(block)
   }
@@ -71,10 +76,20 @@ public class Future<T> {
     fatalError("must be overridden")
   }
 
+  /**
+   - note: Eventually, `block` closure parameter gets called from a concurrent
+   queue. Use proper synchronization when accessing shared state via references
+   captured in the closure.
+   */
   public func onComplete(block: CompletionCallback) {
     fatalError("must be overridden")
   }
 
+  /**
+   - note: Eventually, `f` closure parameter gets called from a concurrent
+   queue. Use proper synchronization when accessing shared state via references
+   captured in the closure.
+   */
   public func flatMap<U>(f: T throws -> Future<U>) -> Future<U> {
     let promise = PromiseFuture<U>()
     onComplete { res in
@@ -96,6 +111,11 @@ public class Future<T> {
     return promise
   }
 
+  /**
+   - note: Eventually, `f` closure parameter gets called from a concurrent
+   queue. Use proper synchronization when accessing shared state via references
+   captured in the closure.
+   */
   public func map<U>(f: T throws -> U) -> Future<U> {
     return flatMap { e in
       do {

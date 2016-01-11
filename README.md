@@ -103,9 +103,9 @@ assert(String(fut.get()) == "Failure(Deliberate(\"[0, 1]\"))")
 
 All asynchronous operations run in libdispatch's default global concurrent
 queue. Closures passed to `Future#flatMap(_:)`, `Future#map(_:)`,
-`Future#onComplete(_:)`, and `Future.async(_:)` always execute in a queue
-worker thread. Use synchronization as appropriate when accessing shared state
-outside the closures.
+`Future#onComplete(_:)`, and `Future.async(_:)` are always executed in a queue
+worker thread. Use proper synchronization when accessing shared state via
+references captured in the closures.
 
 ## Usage
 
