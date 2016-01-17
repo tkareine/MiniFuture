@@ -1,4 +1,4 @@
-import CoreFoundation
+import Foundation
 
 let NumberOfIterations = 500
 let NumberOfFutureCompositions = 2000
@@ -59,12 +59,13 @@ struct Measurement {
 }
 
 func measure(block: () -> Void) -> Measurement {
+  let processInfo = NSProcessInfo.processInfo()
   var samples: [Double] = []
 
   for _ in 0..<NumberOfIterations {
-    let start = CFAbsoluteTimeGetCurrent()
+    let start = processInfo.systemUptime
     block()
-    let end = CFAbsoluteTimeGetCurrent()
+    let end = processInfo.systemUptime
     samples.append((end - start) * 1000)
   }
 
