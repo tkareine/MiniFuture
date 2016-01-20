@@ -27,10 +27,12 @@ Cocoa libraries. It integrates libraries as embedded frameworks to your
 project. This requires that the minimum deployment target of your project is
 iOS 8.0 or OS X 10.9.
 
-To add MiniFuture to your project, add the following line to your `Podfile`:
+MiniFuture is available as a [pod](https://cocoapods.org/pods/MiniFuture). Add
+the following line to your project's `Podfile` in order to have the library as
+a dependency:
 
 ```ruby
-pod 'MiniFuture'
+pod 'MiniFuture', '~> 0.4.0'
 ```
 
 And run `pod install`.
