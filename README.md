@@ -9,7 +9,7 @@ Only the essential features are in place currently. We're using the library in
 production, and it appears to work as expected. There's a benchmark that acts
 as a stress test, see [Performance](#performance) below.
 
-[![Pod version](https://badge.fury.io/co/MiniFuture.svg)](http://badge.fury.io/co/MiniFuture)
+[![Pod version](https://badge.fury.io/co/MiniFuture.svg)][MiniFuturePod]
 
 ## Requirements
 
@@ -27,9 +27,8 @@ Cocoa libraries. It integrates libraries as embedded frameworks to your
 project. This requires that the minimum deployment target of your project is
 iOS 8.0 or OS X 10.9.
 
-MiniFuture is available as a [pod](https://cocoapods.org/pods/MiniFuture). Add
-the following line to your project's `Podfile` in order to have the library as
-a dependency:
+MiniFuture is available as a [pod][MiniFuturePod]. Add the following line to
+your project's `Podfile` in order to have the library as a dependency:
 
 ```ruby
 pod 'MiniFuture', '~> 0.4.0'
@@ -273,3 +272,5 @@ Total memory consumption of the process stayed below 15 MB.
 ## License
 
 MiniFuture is released under the MIT license. See `LICENSE.txt` for details.
+
+[MiniFuturePod]: https://cocoapods.org/pods/MiniFuture
