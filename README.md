@@ -10,6 +10,7 @@ production, and it appears to work as expected. There's a benchmark that acts
 as a stress test, see [Performance](#performance) below.
 
 [![Pod version](https://badge.fury.io/co/MiniFuture.svg)][MiniFuturePod]
+[![Build status](https://secure.travis-ci.org/tkareine/MiniFuture.svg)][MiniFutureBuild]
 
 ## Requirements
 
@@ -274,3 +275,4 @@ Total memory consumption of the process stayed below 15 MB.
 MiniFuture is released under the MIT license. See `LICENSE.txt` for details.
 
 [MiniFuturePod]: https://cocoapods.org/pods/MiniFuture
+[MiniFutureBuild]: https://travis-ci.org/tkareine/MiniFuture
