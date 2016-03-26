@@ -90,8 +90,8 @@ class TryTests: XCTestCase {
   }
 
   func testAssociativityMonadLaw() {
-    func makeSuccessIncrementedBy(by: Int)(val: Int) -> Try<Int> {
-      return .Success(by + val)
+    func makeSuccessIncrementedBy(by: Int) -> (Int) -> Try<Int> {
+      return { val in .Success(by + val) }
     }
 
     let t = Try.Success(1)
@@ -99,7 +99,7 @@ class TryTests: XCTestCase {
     let g = makeSuccessIncrementedBy(2)
 
     let lhs = t.flatMap(f).flatMap(g)
-    let rhs = t.flatMap { x in f(val: x).flatMap(g) }
+    let rhs = t.flatMap { x in f(x).flatMap(g) }
 
     XCTAssert(lhs == rhs)
   }
