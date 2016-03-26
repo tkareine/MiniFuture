@@ -129,6 +129,11 @@ with success (`Future#resolve(_:)`) or failure (`Future#reject(_:)`). You can
 immediately return a `PromiseFuture` to code expecting Futures and let the
 `PromiseFuture` object complete later.
 
+You can complete a `PromiseFuture` with the result of another future,
+too. Call `PromiseFuture#completeWith(_:)`, passing another future as
+the argument. Once the future completes, the promise completes with
+the same result as the future.
+
 When you get a handle to a Future, use `Future#flatMap(_:)` or
 `Future#map(_:)` to compose another Future that depends on the completed
 result of the previous Future. Use `Future#get()` to wait for the result of a
