@@ -9,6 +9,8 @@ func benchmarkFutures() {
   for i in 0..<NumberOfFutureCompositions {
     let futBegin = Future.async { .Success(i) }
     let futEnd: Future<Int> = futBegin.flatMap { e0 in
+      let promise = Future<Int>.promise()
+
       let futIn0: Future<Int> = Future.succeeded(i).flatMap { e1 in
         Future.async { .Success(i) }.flatMap { e2 in
           Future.succeeded(e1 + e2)
@@ -21,11 +23,13 @@ func benchmarkFutures() {
         }
       }
 
-      return futIn0.flatMap { e1 in
+      promise.completeWith(futIn0.flatMap { e1 in
         return futIn1.flatMap { e2 in
           Future.succeeded(e0 + e1 + e2)
         }
-      }
+      })
+
+      return promise
     }
 
     fut = fut.flatMap { _ in futEnd }
