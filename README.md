@@ -256,11 +256,11 @@ $ make benchmark
 ./build/Benchmark
 iterations: 500, futures composed: 2000
 
-warm up: 61 ms (± 3 ms)
-measure: 61 ms (± 4 ms)
+warm up: 65 ms (± 4 ms)
+measure: 65 ms (± 3 ms)
 
-Apple Swift version 2.1.1 (swiftlang-700.1.101.15 clang-700.1.81)
-Target: x86_64-apple-darwin15.2.0
+Apple Swift version 2.2 (swiftlang-703.0.18.1 clang-703.0.29)
+Target: x86_64-apple-macosx10.9
 ```
 
 Total memory consumption of the process stayed below 15 MB.
