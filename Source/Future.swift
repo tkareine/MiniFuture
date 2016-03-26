@@ -238,6 +238,10 @@ public class PromiseFuture<T>: Future<T> {
     }
   }
 
+  public func completeWith(future: Future<T>) {
+    future.onComplete { self.complete($0) }
+  }
+
   override public func get() -> Try<T> {
     return condition.synchronized { wait in
       while result == nil {

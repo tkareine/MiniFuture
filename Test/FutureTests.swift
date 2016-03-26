@@ -152,6 +152,83 @@ class FutureTests: XCTestCase {
     XCTAssertEqual(res.description, "Success(1)")
   }
 
+  func testCompletePromiseFutureWithImmediateFuture() {
+    let promise = Future<Int>.promise()
+
+    XCTAssertFalse(promise.isCompleted)
+
+    let future = Future.succeeded(1)
+
+    promise.completeWith(future)
+
+    let res = promise.get()
+
+    XCTAssertTrue(promise.isCompleted)
+    XCTAssertEqual(res.description, "Success(1)")
+  }
+
+  func testCompletePromiseFutureWithAsyncFuture() {
+    let sem = Semaphore()
+    let promise = Future<Int>.promise()
+
+    XCTAssertFalse(promise.isCompleted)
+
+    let future = Future<Int>.async {
+      sem.wait()
+      return .Success(1)
+    }
+
+    promise.completeWith(future)
+
+    XCTAssertFalse(promise.isCompleted)
+
+    sem.signal()
+
+    let res = promise.get()
+
+    XCTAssertTrue(promise.isCompleted)
+    XCTAssertEqual(res.description, "Success(1)")
+  }
+
+  func testCompletePromiseFutureWithCompletedPromiseFuture() {
+    let promise1 = Future<Int>.promise()
+
+    XCTAssertFalse(promise1.isCompleted)
+
+    let promise2 = Future<Int>.promise()
+    promise2.complete(.Success(1))
+
+    XCTAssertTrue(promise2.isCompleted)
+
+    promise1.completeWith(promise2)
+
+    let res = promise1.get()
+
+    XCTAssertTrue(promise1.isCompleted)
+    XCTAssertEqual(res.description, "Success(1)")
+  }
+
+  func testCompletePromiseFutureWithUncompletedPromiseFuture() {
+    let promise1 = Future<Int>.promise()
+
+    XCTAssertFalse(promise1.isCompleted)
+
+    let promise2 = Future<Int>.promise()
+
+    promise1.completeWith(promise2)
+
+    XCTAssertFalse(promise1.isCompleted)
+
+    promise2.complete(.Success(1))
+
+    XCTAssertTrue(promise2.isCompleted)
+
+    let res = promise1.get()
+
+    XCTAssertTrue(promise1.isCompleted)
+    XCTAssertEqual(res.description, "Success(1)")
+  }
+
   func testFlatMapCompositionWithSuccess() {
     let fut = Future.succeeded(1)
       .flatMap { Future.succeeded([$0, 2]) }
