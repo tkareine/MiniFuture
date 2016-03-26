@@ -3,8 +3,9 @@
 # Check that tests pass
 make
 
-# Update version number
+# Update version numbers in podspec and readme
 $EDITOR MiniFuture.podspec
+$EDITOR README.md
 
 # Describe a summary of changes since the last release
 $EDITOR CHANGELOG.md
