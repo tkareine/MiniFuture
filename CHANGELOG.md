@@ -1,3 +1,8 @@
+# 0.5.0 / 2016-03-26
+
+* Add `PromiseFuture#completeWith(_:)` to complete the promise with
+  the result of the given future once that future is completed.
+
 # 0.4.0 / 2016-01-01
 
 * Allow `Try#flatMap(_:)` and `Try.map(_:)` to throw errors

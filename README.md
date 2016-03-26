@@ -32,7 +32,7 @@ MiniFuture is available as a [pod][MiniFuturePod]. Add the following line to
 your project's `Podfile` in order to have the library as a dependency:
 
 ```ruby
-pod 'MiniFuture', '~> 0.4.0'
+pod 'MiniFuture', '~> 0.5.0'
 ```
 
 And run `pod install`.
