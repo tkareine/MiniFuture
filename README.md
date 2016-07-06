@@ -261,10 +261,10 @@ $ make benchmark
 ./build/Benchmark
 iterations: 500, futures composed: 2000
 
-warm up: 65 ms (± 4 ms)
-measure: 65 ms (± 3 ms)
+warm up: 69 ms (± 4 ms)
+measure: 69 ms (± 5 ms)
 
-Apple Swift version 2.2 (swiftlang-703.0.18.1 clang-703.0.29)
+Apple Swift version 2.2 (swiftlang-703.0.18.8 clang-703.0.31)
 Target: x86_64-apple-macosx10.9
 ```
 
