@@ -251,8 +251,8 @@ standard deviation of time spent completing each composite Future.
 Compile it with Release build configuration, which enables `-O` compiler
 flag. Then run it from the terminal.
 
-Example run with MacBook Pro 2.6 GHz Intel Core i7 Haswell, 16 GB 1600 MHz
-DDR3:
+Example run with MacBook Pro (MacBookPro11,3) 2.6 GHz Intel Core i7
+Haswell, 16 GB 1600 MHz DDR3:
 
 ```
 $ make benchmark
