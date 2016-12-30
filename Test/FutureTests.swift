@@ -28,7 +28,7 @@ class FutureTests: XCTestCase {
   }
 
   func testGetSucceedingAsyncFuture() {
-    let sem = Semaphore()
+    let sem = DispatchSemaphore(value: 0)
     let fut = Future<Int>.async {
       sem.wait()
       return .success(1)
@@ -65,7 +65,7 @@ class FutureTests: XCTestCase {
   }
 
   func testGetSucceedingPromiseFuture() {
-    let sem = Semaphore()
+    let sem = DispatchSemaphore(value: 0)
     let fut = Future<Int>.promise()
 
     FutureExecution.async {
@@ -98,7 +98,7 @@ class FutureTests: XCTestCase {
   }
 
   func testOnCompleteImmediateFuture() {
-    let sem = Semaphore()
+    let sem = DispatchSemaphore(value: 0)
     let fut = Future.succeeded(1)
     var res: Try<Int>!
 
@@ -115,7 +115,7 @@ class FutureTests: XCTestCase {
   }
 
   func testOnCompleteAsyncFuture() {
-    let sem = Semaphore()
+    let sem = DispatchSemaphore(value: 0)
     let fut = Future.async { .success(1) }
     var res: Try<Int>!
 
@@ -132,7 +132,7 @@ class FutureTests: XCTestCase {
   }
 
   func testOnCompletePromiseFuture() {
-    let sem = Semaphore()
+    let sem = DispatchSemaphore(value: 0)
     let fut = Future<Int>.promise()
     var res: Try<Int>!
 
@@ -168,7 +168,7 @@ class FutureTests: XCTestCase {
   }
 
   func testCompletePromiseFutureWithAsyncFuture() {
-    let sem = Semaphore()
+    let sem = DispatchSemaphore(value: 0)
     let promise = Future<Int>.promise()
 
     XCTAssertFalse(promise.isCompleted)
@@ -284,14 +284,14 @@ class FutureTests: XCTestCase {
   }
 
   func testOuterFlatMapCompositionStartingWithImmediateFuture() {
-    let sem0 = Semaphore()
+    let sem0 = DispatchSemaphore(value: 0)
     let futS = Future.succeeded(0)
     let fut0: Future<[Int]> = futS.flatMap { e in
       sem0.wait()
       return Future.succeeded([e, 1])
     }
 
-    let sem1 = Semaphore()
+    let sem1 = DispatchSemaphore(value: 0)
     let fut1: Future<[Int]> = fut0.flatMap { e in
       sem1.wait()
       return Future.failed(AppError.deliberate(String(describing: e + [2])))
@@ -320,19 +320,19 @@ class FutureTests: XCTestCase {
   }
 
   func testOuterFlatMapCompositionStartingWithAsyncFuture() {
-    let sem0 = Semaphore()
+    let sem0 = DispatchSemaphore(value: 0)
     let fut0 = Future<Int>.async {
       sem0.wait()
       return .success(0)
     }
 
-    let sem1 = Semaphore()
+    let sem1 = DispatchSemaphore(value: 0)
     let fut1: Future<[Int]> = fut0.flatMap { e in
       sem1.wait()
       return Future.async { .success([e, 1]) }
     }
 
-    let sem2 = Semaphore()
+    let sem2 = DispatchSemaphore(value: 0)
     let fut2: Future<[Int]> = fut1.flatMap { e in
       sem2.wait()
       return Future.async { .failure(AppError.deliberate(String(describing: e + [2]))) }
@@ -371,8 +371,8 @@ class FutureTests: XCTestCase {
   }
 
   func testInnerFlatMapCompositionStartingWithImmediateFuture() {
-    let semOut = Semaphore()
-    let semIn = Semaphore()
+    let semOut = DispatchSemaphore(value: 0)
+    let semIn = DispatchSemaphore(value: 0)
 
     var futIn: Future<[Int]>!
 
@@ -403,8 +403,8 @@ class FutureTests: XCTestCase {
   }
 
   func testInnerFlatMapCompositionStartingWithAsyncFuture() {
-    let semOut = Semaphore()
-    let semIn = Semaphore()
+    let semOut = DispatchSemaphore(value: 0)
+    let semIn = DispatchSemaphore(value: 0)
 
     var futIn: Future<[Int]>!
 

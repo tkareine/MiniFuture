@@ -9,13 +9,10 @@
 /* Begin PBXBuildFile section */
 		E909FD161A30DF46003537CC /* Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E909FD151A30DF46003537CC /* Condition.swift */; };
 		E909FD171A30E5A1003537CC /* Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E909FD151A30DF46003537CC /* Condition.swift */; };
-		E91E61FF1A6ABB3400543A40 /* SemaphoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E91E61FE1A6ABB3400543A40 /* SemaphoreTests.swift */; };
-		E91E62001A6ABFA300543A40 /* SemaphoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E91E61FE1A6ABB3400543A40 /* SemaphoreTests.swift */; };
 		E921CEFF1A5F1A130016AF1C /* TryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E942A48D1A2FA50D00781DC5 /* TryTests.swift */; };
 		E921CF001A5F1A150016AF1C /* FutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5071A2A65D400D52D0E /* FutureTests.swift */; };
 		E921CF011A5F1A240016AF1C /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5041A2A642600D52D0E /* Try.swift */; };
 		E921CF021A5F1A240016AF1C /* Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E909FD151A30DF46003537CC /* Condition.swift */; };
-		E921CF031A5F1A240016AF1C /* Semaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F433CF1A33080800F8F0AC /* Semaphore.swift */; };
 		E921CF041A5F1A240016AF1C /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5031A2A642600D52D0E /* Future.swift */; };
 		E942A48E1A2FA50D00781DC5 /* TryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E942A48D1A2FA50D00781DC5 /* TryTests.swift */; };
 		E9546F9C1A30F88E00799DFE /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9546F9B1A30F88E00799DFE /* main.swift */; };
@@ -32,7 +29,6 @@
 		E99CE50B1A2A6A5A00D52D0E /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5041A2A642600D52D0E /* Try.swift */; };
 		E99CE50C1A2A6A6B00D52D0E /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5031A2A642600D52D0E /* Future.swift */; };
 		E99CE50D1A2A6A6B00D52D0E /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99CE5041A2A642600D52D0E /* Try.swift */; };
-		E9F433D01A33080800F8F0AC /* Semaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F433CF1A33080800F8F0AC /* Semaphore.swift */; };
 		E9FA3C571BB083DB0070379F /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA3C561BB083DB0070379F /* AppError.swift */; };
 		E9FA3C581BB083DB0070379F /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FA3C561BB083DB0070379F /* AppError.swift */; };
 /* End PBXBuildFile section */
@@ -62,7 +58,6 @@
 		E909FD151A30DF46003537CC /* Condition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Condition.swift; sourceTree = "<group>"; };
 		E91C4ACA1A3364FF00E620AC /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E91C4ACB1A3364FF00E620AC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		E91E61FE1A6ABB3400543A40 /* SemaphoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SemaphoreTests.swift; sourceTree = "<group>"; };
 		E921CEF61A5F19D60016AF1C /* Test-ios.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Test-ios.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E942A48D1A2FA50D00781DC5 /* TryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryTests.swift; sourceTree = "<group>"; };
 		E9546F991A30F88E00799DFE /* Benchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Benchmark; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,7 +77,6 @@
 		E99CE5031A2A642600D52D0E /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
 		E99CE5041A2A642600D52D0E /* Try.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Try.swift; sourceTree = "<group>"; };
 		E99CE5071A2A65D400D52D0E /* FutureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTests.swift; sourceTree = "<group>"; };
-		E9F433CF1A33080800F8F0AC /* Semaphore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Semaphore.swift; sourceTree = "<group>"; };
 		E9FA3C561BB083DB0070379F /* AppError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -156,7 +150,6 @@
 			children = (
 				E99CE5041A2A642600D52D0E /* Try.swift */,
 				E909FD151A30DF46003537CC /* Condition.swift */,
-				E9F433CF1A33080800F8F0AC /* Semaphore.swift */,
 				E99CE5031A2A642600D52D0E /* Future.swift */,
 			);
 			path = Source;
@@ -167,7 +160,6 @@
 			children = (
 				E9FA3C561BB083DB0070379F /* AppError.swift */,
 				E942A48D1A2FA50D00781DC5 /* TryTests.swift */,
-				E91E61FE1A6ABB3400543A40 /* SemaphoreTests.swift */,
 				E99CE5071A2A65D400D52D0E /* FutureTests.swift */,
 				E99CE4EC1A2A635D00D52D0E /* Supporting Files */,
 			);
@@ -342,11 +334,9 @@
 			files = (
 				E921CF011A5F1A240016AF1C /* Try.swift in Sources */,
 				E921CF021A5F1A240016AF1C /* Condition.swift in Sources */,
-				E921CF031A5F1A240016AF1C /* Semaphore.swift in Sources */,
 				E921CF041A5F1A240016AF1C /* Future.swift in Sources */,
 				E9FA3C571BB083DB0070379F /* AppError.swift in Sources */,
 				E921CEFF1A5F1A130016AF1C /* TryTests.swift in Sources */,
-				E91E61FF1A6ABB3400543A40 /* SemaphoreTests.swift in Sources */,
 				E921CF001A5F1A150016AF1C /* FutureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -368,11 +358,9 @@
 			files = (
 				E99CE50B1A2A6A5A00D52D0E /* Try.swift in Sources */,
 				E909FD161A30DF46003537CC /* Condition.swift in Sources */,
-				E9F433D01A33080800F8F0AC /* Semaphore.swift in Sources */,
 				E99CE50A1A2A6A5A00D52D0E /* Future.swift in Sources */,
 				E9FA3C581BB083DB0070379F /* AppError.swift in Sources */,
 				E942A48E1A2FA50D00781DC5 /* TryTests.swift in Sources */,
-				E91E62001A6ABFA300543A40 /* SemaphoreTests.swift in Sources */,
 				E99CE5081A2A65D400D52D0E /* FutureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
