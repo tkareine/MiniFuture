@@ -1,3 +1,5 @@
 osx_image: xcode8.2
 language: objective-c
+before_install:
+  - xcrun simctl delete 79C525D3-2383-4201-AC3A-81810F9F4E03
 script: make test-all
