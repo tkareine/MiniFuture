@@ -1,46 +1,46 @@
 import Foundation
 
 public enum Try<T> {
-  case Success(T)
-  case Failure(ErrorType)
+  case success(T)
+  case failure(Error)
 
-  public func flatMap<U>(@noescape f: T throws -> Try<U>) -> Try<U> {
+  public func flatMap<U>(_ f: (T) throws -> Try<U>) -> Try<U> {
     switch self {
-    case Success(let value):
+    case .success(let value):
       do {
         return try f(value)
       } catch {
-        return .Failure(error)
+        return .failure(error)
       }
-    case Failure(let error):
-      return .Failure(error)
+    case .failure(let error):
+      return .failure(error)
     }
   }
 
-  public func map<U>(@noescape f: T throws -> U) -> Try<U> {
+  public func map<U>(_ f: (T) throws -> U) -> Try<U> {
     return flatMap { e in
       do {
-        return .Success(try f(e))
+        return .success(try f(e))
       } catch {
-        return .Failure(error)
+        return .failure(error)
       }
     }
   }
 
   public func value() throws -> T {
     switch self {
-    case Success(let value):
+    case .success(let value):
       return value
-    case Failure(let error):
+    case .failure(let error):
       throw error
     }
   }
 
   public var isSuccess: Bool {
     switch self {
-    case Success:
+    case .success:
       return true
-    case Failure:
+    case .failure:
       return false
     }
   }
@@ -53,19 +53,19 @@ public enum Try<T> {
 extension Try: CustomStringConvertible, CustomDebugStringConvertible {
   public var description: String {
     switch self {
-    case .Success(let value):
-      return "Success(\(value))"
-    case .Failure(let error):
-      return "Failure(\(error))"
+    case .success(let value):
+      return "Try.success(\(value))"
+    case .failure(let error):
+      return "Try.failure(\(error))"
     }
   }
 
   public var debugDescription: String {
     switch self {
-    case .Success(let value):
-      return "Success(\(String(reflecting: value)))"
-    case .Failure(let error):
-      return "Failure(\(String(reflecting: error)))"
+    case .success(let value):
+      return "Try.success(\(String(reflecting: value)))"
+    case .failure(let error):
+      return "Try.failure(\(String(reflecting: error)))"
     }
   }
 }
@@ -76,9 +76,9 @@ extension Try: CustomStringConvertible, CustomDebugStringConvertible {
  */
 public func ==<T: Equatable>(lhs: Try<T>, rhs: Try<T>) -> Bool {
   switch (lhs, rhs) {
-  case (.Success(let lhs), .Success(let rhs)):
+  case (.success(let lhs), .success(let rhs)):
     return lhs == rhs
-  case (.Failure(let lhs as NSError), .Failure(let rhs as NSError)):
+  case (.failure(let lhs as NSError), .failure(let rhs as NSError)):
     return lhs.domain == rhs.domain
         && lhs.code == rhs.code
   default:

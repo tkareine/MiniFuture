@@ -1,32 +1,32 @@
 import Dispatch
 
 struct FutureExecution {
-  private static let sharedQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+  private static let sharedQueue = DispatchQueue.global()
 
-  typealias Group = dispatch_group_t
+  typealias Group = DispatchGroup
 
   static func makeGroup() -> Group {
-    return dispatch_group_create()
+    return DispatchGroup()
   }
 
-  static func async(block: () -> Void) {
-    dispatch_async(sharedQueue, block)
+  static func async(_ block: @escaping () -> Void) {
+    sharedQueue.async(execute: block)
   }
 
-  static func async(group: Group, block: () -> Void) {
-    dispatch_group_async(group, sharedQueue, block)
+  static func async(_ group: Group, block: @escaping () -> Void) {
+    sharedQueue.async(group: group, execute: block)
   }
 
-  static func sync(block: () -> Void) {
-    dispatch_sync(sharedQueue, block)
+  static func sync(_ block: () -> Void) {
+    sharedQueue.sync(execute: block)
   }
 
-  static func notify(group: Group, block: () -> Void) {
-    dispatch_group_notify(group, sharedQueue, block)
+  static func notify(_ group: Group, block: @escaping () -> Void) {
+    group.notify(queue: sharedQueue, execute: block)
   }
 
-  static func wait(group: Group) {
-    dispatch_group_wait(group, DISPATCH_TIME_FOREVER)
+  static func wait(_ group: Group) {
+    group.wait()
   }
 }
 
@@ -36,19 +36,19 @@ public class Future<T> {
    queue. Use proper synchronization when accessing shared state via references
    captured in the closure.
    */
-  public static func async(block: () throws -> Try<T>) -> AsyncFuture<T> {
+  public static func async(_ block: @escaping () throws -> Try<T>) -> AsyncFuture<T> {
     return AsyncFuture(block)
   }
 
-  public static func succeeded(val: T) -> ImmediateFuture<T> {
-    return fromTry(.Success(val))
+  public static func succeeded(_ val: T) -> ImmediateFuture<T> {
+    return fromTry(.success(val))
   }
 
-  public static func failed(error: ErrorType) -> ImmediateFuture<T> {
-    return fromTry(.Failure(error))
+  public static func failed(_ error: Error) -> ImmediateFuture<T> {
+    return fromTry(.failure(error))
   }
 
-  public static func fromTry(val: Try<T>) -> ImmediateFuture<T> {
+  public static func fromTry(_ val: Try<T>) -> ImmediateFuture<T> {
     return ImmediateFuture(val)
   }
 
@@ -56,19 +56,19 @@ public class Future<T> {
     return PromiseFuture()
   }
 
-  public typealias CompletionCallback = Try<T> -> Void
+  public typealias CompletionCallback = (Try<T>) -> Void
 
-  private var result: Try<T>?
+  fileprivate var result: Try<T>?
 
   public var isCompleted: Bool {
     fatalError("must be overridden")
   }
 
-  private var futureName: String {
+  fileprivate var futureName: String {
     fatalError("must be overridden")
   }
 
-  private init(_ val: Try<T>?) {
+  fileprivate init(_ val: Try<T>?) {
     result = val
   }
 
@@ -81,7 +81,7 @@ public class Future<T> {
    queue. Use proper synchronization when accessing shared state via references
    captured in the closure.
    */
-  public func onComplete(block: CompletionCallback) {
+  public func onComplete(_ block: @escaping CompletionCallback) {
     fatalError("must be overridden")
   }
 
@@ -90,11 +90,11 @@ public class Future<T> {
    queue. Use proper synchronization when accessing shared state via references
    captured in the closure.
    */
-  public func flatMap<U>(f: T throws -> Future<U>) -> Future<U> {
+  public func flatMap<U>(_ f: @escaping (T) throws -> Future<U>) -> Future<U> {
     let promise = PromiseFuture<U>()
     onComplete { res in
       switch res {
-      case .Success(let value):
+      case .success(let value):
         let fut: Future<U>
         do {
           fut = try f(value)
@@ -102,10 +102,10 @@ public class Future<T> {
           fut = Future<U>.failed(error)
         }
         fut.onComplete(promise.complete)
-      case .Failure(let error):
+      case .failure(let error):
         // we cannot cast dynamically with generic types, so let's create a
         // new value
-        promise.complete(.Failure(error))
+        promise.complete(.failure(error))
       }
     }
     return promise
@@ -116,7 +116,7 @@ public class Future<T> {
    queue. Use proper synchronization when accessing shared state via references
    captured in the closure.
    */
-  public func map<U>(f: T throws -> U) -> Future<U> {
+  public func map<U>(_ f: @escaping (T) throws -> U) -> Future<U> {
     return flatMap { e in
       do {
         return Future<U>.succeeded(try f(e))
@@ -132,11 +132,11 @@ public class ImmediateFuture<T>: Future<T> {
     return result != nil
   }
 
-  override private var futureName: String {
+  override fileprivate var futureName: String {
     return "ImmediateFuture"
   }
 
-  private init(_ val: Try<T>) {
+  fileprivate init(_ val: Try<T>) {
     super.init(val)
   }
 
@@ -144,7 +144,7 @@ public class ImmediateFuture<T>: Future<T> {
     return result!
   }
 
-  override public func onComplete(block: CompletionCallback) {
+  override public func onComplete(_ block: @escaping CompletionCallback) {
     let res = result!
     FutureExecution.async { block(res) }
   }
@@ -161,18 +161,18 @@ public class AsyncFuture<T>: Future<T> {
     return res
   }
 
-  override private var futureName: String {
+  override fileprivate var futureName: String {
     return "AsyncFuture"
   }
 
-  private init(_ block: () throws -> Try<T>) {
+  fileprivate init(_ block: @escaping () throws -> Try<T>) {
     super.init(nil)
     FutureExecution.async(Group) {
       let res: Try<T>
       do {
         res = try block()
       } catch {
-        res = Try<T>.Failure(error)
+        res = Try<T>.failure(error)
       }
       self.result = res
     }
@@ -183,7 +183,7 @@ public class AsyncFuture<T>: Future<T> {
     return result!
   }
 
-  override public func onComplete(block: CompletionCallback) {
+  override public func onComplete(_ block: @escaping CompletionCallback) {
     FutureExecution.notify(Group) {
       block(self.result!)
     }
@@ -200,23 +200,23 @@ public class PromiseFuture<T>: Future<T> {
     }
   }
 
-  override private var futureName: String {
+  override fileprivate var futureName: String {
     return "PromiseFuture"
   }
 
-  private init() {
+  fileprivate init() {
     super.init(nil)
   }
 
-  public func resolve(value: T) {
-    complete(.Success(value))
+  public func resolve(_ value: T) {
+    complete(.success(value))
   }
 
-  public func reject(error: ErrorType) {
-    complete(.Failure(error))
+  public func reject(_ error: Error) {
+    complete(.failure(error))
   }
 
-  public func complete(value: Try<T>) {
+  public func complete(_ value: Try<T>) {
     let callbacks: [CompletionCallback] = condition.synchronized { _ in
       if result != nil {
         fatalError("Tried to complete PromiseFuture with \(value.value), but " +
@@ -238,7 +238,7 @@ public class PromiseFuture<T>: Future<T> {
     }
   }
 
-  public func completeWith(future: Future<T>) {
+  public func completeWith(_ future: Future<T>) {
     future.onComplete { self.complete($0) }
   }
 
@@ -252,7 +252,7 @@ public class PromiseFuture<T>: Future<T> {
     }
   }
 
-  override public func onComplete(block: CompletionCallback) {
+  override public func onComplete(_ block: @escaping CompletionCallback) {
     let res: Try<T>? = condition.synchronized { _ in
       let res = result
 

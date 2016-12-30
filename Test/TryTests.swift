@@ -2,22 +2,22 @@ import XCTest
 
 class TryTests: XCTestCase {
   func testSuccess() {
-    let t = Try.Success(["a", "b"])
+    let t = Try.success(["a", "b"])
 
     XCTAssert(try! t.value() == ["a", "b"])
     XCTAssertTrue(t.isSuccess)
     XCTAssertFalse(t.isFailure)
-    XCTAssertEqual(t.description, "Success([\"a\", \"b\"])")
-    XCTAssertEqual(t.debugDescription, "Success([\"a\", \"b\"])")
+    XCTAssertEqual(t.description, "Try.success([\"a\", \"b\"])")
+    XCTAssertEqual(t.debugDescription, "Try.success([\"a\", \"b\"])")
   }
 
   func testFailure() {
-    let t = Try<Int>.Failure(Error.Deliberate("42"))
+    let t = Try<Int>.failure(AppError.deliberate("42"))
 
     do {
-      try t.value()
+      let _ = try t.value()
       XCTFail("should have thrown")
-    } catch Error.Deliberate(let err) {
+    } catch AppError.deliberate(let err) {
       XCTAssert(err == "42")
     } catch {
       XCTFail("should have been catched")
@@ -25,76 +25,76 @@ class TryTests: XCTestCase {
 
     XCTAssertFalse(t.isSuccess)
     XCTAssertTrue(t.isFailure)
-    XCTAssertEqual(t.description, "Failure(Deliberate(\"42\"))")
-    XCTAssertEqual(t.debugDescription, "Failure(Deliberate(\"42\"))")
+    XCTAssertEqual(t.description, "Try.failure(AppError.deliberate(\"42\"))")
+    XCTAssertEqual(t.debugDescription, "Try.failure(AppError.deliberate(\"42\"))")
   }
 
   func testFlatMapComposition() {
-    let t0 = Try.Success(1).flatMap { e in .Success([e, 2]) }
-    let t1: Try<[Int]> = t0.flatMap { e in .Failure(Error.Deliberate(String(e + [3]))) }
+    let t0 = Try.success(1).flatMap { e in .success([e, 2]) }
+    let t1: Try<[Int]> = t0.flatMap { e in .failure(AppError.deliberate(String(describing: e + [3]))) }
     let t2 = t1.flatMap(tryFunCausingFatalError)
 
-    XCTAssertEqual(t0.description, "Success([1, 2])")
-    XCTAssertEqual(t1.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
-    XCTAssertEqual(t2.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
+    XCTAssertEqual(t0.description, "Try.success([1, 2])")
+    XCTAssertEqual(t1.description, "Try.failure(AppError.deliberate(\"[1, 2, 3]\"))")
+    XCTAssertEqual(t2.description, "Try.failure(AppError.deliberate(\"[1, 2, 3]\"))")
   }
 
   func testFlatMapThrows() {
-    let t: Try<[Int]> = Try.Success(1).flatMap { e in throw Error.Deliberate(String([e, 2])) }
+    let t: Try<[Int]> = Try.success(1).flatMap { e in throw AppError.deliberate(String(describing: [e, 2])) }
 
-    XCTAssertEqual(t.description, "Failure(Deliberate(\"[1, 2]\"))")
+    XCTAssertEqual(t.description, "Try.failure(AppError.deliberate(\"[1, 2]\"))")
   }
 
   func testMapComposition() {
-    let t0 = Try.Success(1).map { e in [e, 2] }
-    let t1: Try<[Int]> = t0.flatMap { e in .Failure(Error.Deliberate(String(e + [3]))) }
+    let t0 = Try.success(1).map { e in [e, 2] }
+    let t1: Try<[Int]> = t0.flatMap { e in .failure(AppError.deliberate(String(describing: e + [3]))) }
     let t2 = t1.map(funCausingFatalError)
 
-    XCTAssertEqual(t0.description, "Success([1, 2])")
-    XCTAssertEqual(t1.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
-    XCTAssertEqual(t2.description, "Failure(Deliberate(\"[1, 2, 3]\"))")
+    XCTAssertEqual(t0.description, "Try.success([1, 2])")
+    XCTAssertEqual(t1.description, "Try.failure(AppError.deliberate(\"[1, 2, 3]\"))")
+    XCTAssertEqual(t2.description, "Try.failure(AppError.deliberate(\"[1, 2, 3]\"))")
   }
 
   func testMapThrows() {
-    let t: Try<[Int]> = Try.Success(1).map { e in throw Error.Deliberate(String([e, 2])) }
+    let t: Try<[Int]> = Try.success(1).map { e in throw AppError.deliberate(String(describing: [e, 2])) }
 
-    XCTAssertEqual(t.description, "Failure(Deliberate(\"[1, 2]\"))")
+    XCTAssertEqual(t.description, "Try.failure(AppError.deliberate(\"[1, 2]\"))")
   }
 
   func testEquality() {
-    XCTAssert(Try.Success(1) == Try.Success(1))
-    XCTAssert(Try.Success(1) != Try.Success(2))
-    XCTAssert(Try<Int>.Failure(Error.Deliberate("lol")) == Try<Int>.Failure(Error.Deliberate("lol")))
-    XCTAssert(Try<Int>.Failure(Error.Deliberate("lol")) == Try<Int>.Failure(Error.Deliberate("bal")))
-    XCTAssert(Try<Int>.Failure(Error.Deliberate("lol")) != Try<Int>.Failure(Error.Unsupported))
-    XCTAssert(Try.Success(1) != Try<Int>.Failure(Error.Deliberate("1")))
-    XCTAssert(Try<Int>.Failure(Error.Deliberate("1")) != Try.Success(1))
+    XCTAssert(Try.success(1) == Try.success(1))
+    XCTAssert(Try.success(1) != Try.success(2))
+    XCTAssert(Try<Int>.failure(AppError.deliberate("lol")) == Try<Int>.failure(AppError.deliberate("lol")))
+    XCTAssert(Try<Int>.failure(AppError.deliberate("lol")) == Try<Int>.failure(AppError.deliberate("bal")))
+    XCTAssert(Try<Int>.failure(AppError.deliberate("lol")) != Try<Int>.failure(AppError.unsupported))
+    XCTAssert(Try.success(1) != Try<Int>.failure(AppError.deliberate("1")))
+    XCTAssert(Try<Int>.failure(AppError.deliberate("1")) != Try.success(1))
   }
 
   func testLeftIdentityMonadLaw() {
-    func newSuccess(x: Int) -> Try<Int> {
-      return .Success(x)
+    func makeSuccess(_ x: Int) -> Try<Int> {
+      return .success(x)
     }
 
-    let lhs = Try.Success(1).flatMap(newSuccess)
-    let rhs = newSuccess(1)
+    let lhs = Try.success(1).flatMap(makeSuccess)
+    let rhs = makeSuccess(1)
 
     XCTAssert(lhs == rhs)
   }
 
   func testRightIdentityMonadLaw() {
-    let lhs = Try.Success(1)
-    let rhs = Try.Success(1).flatMap { e in .Success(e) }
+    let lhs = Try.success(1)
+    let rhs = Try.success(1).flatMap { e in .success(e) }
 
     XCTAssert(lhs == rhs)
   }
 
   func testAssociativityMonadLaw() {
-    func makeSuccessIncrementedBy(by: Int) -> (Int) -> Try<Int> {
-      return { val in .Success(by + val) }
+    func makeSuccessIncrementedBy(_ by: Int) -> (Int) -> Try<Int> {
+      return { val in .success(by + val) }
     }
 
-    let t = Try.Success(1)
+    let t = Try.success(1)
     let f = makeSuccessIncrementedBy(1)
     let g = makeSuccessIncrementedBy(2)
 

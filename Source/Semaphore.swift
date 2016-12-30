@@ -1,23 +1,23 @@
 import Dispatch
 
 public final class Semaphore {
-  public typealias TimeoutInMS = dispatch_time_t
+  public typealias TimeoutInMS = UInt64
 
-  private let sem: dispatch_semaphore_t
+  private let sem: DispatchSemaphore
 
   public init(count: Int = 0) {
-    sem = dispatch_semaphore_create(count)
+    sem = DispatchSemaphore(value: count)
   }
 
   public func signal() {
-    dispatch_semaphore_signal(sem)
+    sem.signal()
   }
 
-  public func wait(timeout timeoutInMS: TimeoutInMS = DISPATCH_TIME_FOREVER) {
-    let timeoutInNS = timeoutInMS != DISPATCH_TIME_FOREVER
-      ? dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_MSEC) * Int64(timeoutInMS))
-      : DISPATCH_TIME_FOREVER
+  public func wait(timeout timeoutInMS: TimeoutInMS = UInt64.max) {
+    let timeout = timeoutInMS != UInt64.max
+      ? DispatchTime(uptimeNanoseconds: NSEC_PER_MSEC * timeoutInMS)
+      : DispatchTime.distantFuture
 
-    dispatch_semaphore_wait(sem, timeoutInNS)
+    let _ = sem.wait(timeout: timeout)
   }
 }

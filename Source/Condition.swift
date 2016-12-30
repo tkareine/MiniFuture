@@ -9,10 +9,10 @@ public final class Condition {
   private lazy var waitCallback: WaitCallback = { [unowned self] in self.wait() }
 
   init() {
-    mutex = UnsafeMutablePointer.alloc(1)
+    mutex = UnsafeMutablePointer.allocate(capacity: 1)
     let mutexRes = pthread_mutex_init(mutex, nil)
     assert(mutexRes == 0)
-    condition = UnsafeMutablePointer.alloc(1)
+    condition = UnsafeMutablePointer.allocate(capacity: 1)
     let condRes = pthread_cond_init(condition, nil)
     assert(condRes == 0)
   }
@@ -20,13 +20,13 @@ public final class Condition {
   deinit {
     let condRes = pthread_cond_destroy(condition)
     assert(condRes == 0)
-    condition.dealloc(1)
+    condition.deallocate(capacity: 1)
     let mutexRes = pthread_mutex_destroy(mutex)
     assert(mutexRes == 0)
-    mutex.dealloc(1)
+    mutex.deallocate(capacity: 1)
   }
 
-  public func synchronized<T>(@noescape block: WaitCallback -> T) -> T {
+  public func synchronized<T>(_ block: (WaitCallback) -> T) -> T {
     lock()
     let ret = block(waitCallback)
     unlock()

@@ -2,22 +2,22 @@ import XCTest
 
 class SemaphoreTests: XCTestCase {
   func testWaitWithTimeout() {
-    let expectation = expectationWithDescription("wait with timeout")
+    let expect = expectation(description: "wait with timeout")
     FutureExecution.async {
       Semaphore().wait(timeout: 50)
-      expectation.fulfill()
+      expect.fulfill()
     }
-    waitForExpectationsWithTimeout(0.2, handler: nil)
+    waitForExpectations(timeout: 0.2, handler: nil)
   }
 
   func testWaitAndSignal() {
     let sem = Semaphore()
-    let expectation = expectationWithDescription("wait and signal")
+    let expect = expectation(description: "wait and signal")
     FutureExecution.async {
       sem.wait()
-      expectation.fulfill()
+      expect.fulfill()
     }
     sem.signal()
-    waitForExpectationsWithTimeout(0.1, handler: nil)
+    waitForExpectations(timeout: 0.1, handler: nil)
   }
 }
