@@ -25,4 +25,4 @@ lint-pod:
 	pod lib lint --quick
 
 clean:
-	rm -fr build DerivedData
+	rm -fr .build build DerivedData

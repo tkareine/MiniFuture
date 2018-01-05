@@ -1,5 +1,9 @@
 import Foundation
 
+#if SWIFT_PACKAGE
+  import MiniFuture
+#endif
+
 let numberOfIterations = 500
 let numberOfFutureCompositions = 2000
 

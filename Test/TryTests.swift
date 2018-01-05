@@ -1,5 +1,9 @@
 import XCTest
 
+#if SWIFT_PACKAGE
+  import MiniFuture
+#endif
+
 class TryTests: XCTestCase {
   func testSuccess() {
     let t = Try.success(["a", "b"])

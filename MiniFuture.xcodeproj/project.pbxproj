@@ -60,6 +60,7 @@
 		E91C4ACB1A3364FF00E620AC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E921CEF61A5F19D60016AF1C /* Test-ios.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Test-ios.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E942A48D1A2FA50D00781DC5 /* TryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryTests.swift; sourceTree = "<group>"; };
+		E944B2D8200033B10037E168 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		E9546F991A30F88E00799DFE /* Benchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Benchmark; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9546F9B1A30F88E00799DFE /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E964908C1A57669E0061F232 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
@@ -124,6 +125,7 @@
 		E99CE4D31A2A635D00D52D0E = {
 			isa = PBXGroup;
 			children = (
+				E944B2D8200033B10037E168 /* Package.swift */,
 				E91C4ACB1A3364FF00E620AC /* README.md */,
 				E91C4ACA1A3364FF00E620AC /* LICENSE.txt */,
 				E99CE4DE1A2A635D00D52D0E /* Source */,

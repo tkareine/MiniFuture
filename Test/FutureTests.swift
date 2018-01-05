@@ -1,5 +1,9 @@
 import XCTest
 
+#if SWIFT_PACKAGE
+  @testable import MiniFuture
+#endif
+
 class FutureTests: XCTestCase {
   func testGetSucceedingImmediateFuture() {
     let fut = Future.succeeded(1)
