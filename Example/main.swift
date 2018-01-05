@@ -18,13 +18,13 @@ extension String {
       return ""
     }
 
-    let length = characters.count
+    let length = count
 
     if length <= maxLength {
       return self
     }
 
-    return self[startIndex..<characters.index(startIndex, offsetBy: maxLength-1)].trimmed + "…"
+    return String(self[startIndex..<index(startIndex, offsetBy: maxLength-1)]).trimmed + "…"
   }
 }
 

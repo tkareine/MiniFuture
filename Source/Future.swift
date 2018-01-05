@@ -271,7 +271,7 @@ public class PromiseFuture<T>: Future<T> {
 
 extension Future: CustomStringConvertible, CustomDebugStringConvertible {
   public var description: String {
-    return "\(futureName)(\(result))"
+    return "\(futureName)(\(String(describing: result)))"
   }
 
   public var debugDescription: String {
