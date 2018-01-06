@@ -16,10 +16,8 @@ below.
 
 ## Requirements
 
-* iOS >= 7.0 (if installing by copying source files manually) or iOS >= 8.0
-  (if installing as embedded framework)
 * Mac OS X >= 10.9
-* Xcode >= 8.0 (Swift 3.0)
+* Xcode >= 9.0 (Swift 4.0)
 
 ## Installation
 
@@ -268,14 +266,14 @@ $ make benchmark
 ./build/Benchmark
 iterations: 500, futures composed: 2000
 
-warm up: 67 ms (± 1 ms)
-measure: 68 ms (± 2 ms)
+warm up: 71 ms (± 2 ms)
+measure: 71 ms (± 2 ms)
 
-Apple Swift version 3.0.2 (swiftlang-800.0.63 clang-800.0.42.1)
+Apple Swift version 4.0.3 (swiftlang-900.0.74.1 clang-900.0.39.2)
 Target: x86_64-apple-macosx10.9
 ```
 
-Total memory consumption of the process stayed below 15 MB.
+Total memory consumption of the process stayed below 20 MB.
 
 ## Future work
 
